@@ -209,7 +209,7 @@
                                             {
                                             <li>
                                                 <a>
-                                                    <span class="image avatar">
+                                                    <span class="avatar">
                                                         <img src="@history.User.AvatarPath" alt="img" class=""/>
                                                     </span>
                                                     <span>
@@ -218,9 +218,22 @@
                                                         <br />
                                                         <span class="time">@history.Changed.ToString("h:mm tt")</span>
                                                     </span>
-                                                    <br />
+                                                    
                                                     <span class="message">
-                                                        Changed @history.Property from @LookupHelper.GetNameFromId(history.Property, history.OldValue) to @LookupHelper.GetNameFromId(history.Property, history.NewValue)
+                                                        @if (history.Property != "Title" && history.Property != "Description")
+                                                        {
+                                                            <br />
+                                                            <span>
+                                                                Changed @history.Property from @LookupHelper.GetNameFromId(history.Property, history.OldValue) to @LookupHelper.GetNameFromId(history.Property, history.NewValue)
+                                                            </span>
+                                                        }
+                                                        else
+                                                        {
+                                                            <br />
+                                                            <span>
+                                                                Changed @history.Property from <b>@history.OldValue</b> to <b>@history.NewValue</b>
+                                                            </span>
+                                                        }
                                                     </span>
                                                 </a>
                                             </li>
