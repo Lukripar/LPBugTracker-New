@@ -284,6 +284,7 @@
     <Content Include="Private.config">
       <SubType>Designer</SubType>
     </Content>
+    <None Include="Properties\PublishProfiles\LPBugTracker - Web Deploy.pubxml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\Chart.min.js" />
     <Content Include="Scripts\curvedLines.js" />

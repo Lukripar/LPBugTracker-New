@@ -209,8 +209,8 @@
                                             {
                                             <li>
                                                 <a>
-                                                    <span class="image">
-                                                        <img src="@history.User.AvatarPath" alt="img" />
+                                                    <span class="image avatar">
+                                                        <img src="@history.User.AvatarPath" alt="img" class=""/>
                                                     </span>
                                                     <span>
                                                         <span>@history.User.FullName</span>
@@ -218,8 +218,9 @@
                                                         <br />
                                                         <span class="time">@history.Changed.ToString("h:mm tt")</span>
                                                     </span>
+                                                    <br />
                                                     <span class="message">
-                                                        Changed @history.Property  from @LookupHelper.GetNameFromId(history.Property, history.OldValue) to @LookupHelper.GetNameFromId(history.Property, history.NewValue)
+                                                        Changed @history.Property from @LookupHelper.GetNameFromId(history.Property, history.OldValue) to @LookupHelper.GetNameFromId(history.Property, history.NewValue)
                                                     </span>
                                                 </a>
                                             </li>
