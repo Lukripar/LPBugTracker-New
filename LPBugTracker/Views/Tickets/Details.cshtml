@@ -1,0 +1,316 @@
+﻿@model LPBugTracker.Models.Ticket
+
+@using Microsoft.AspNet.Identity;
+@using System.Web;
+@using LPBugTracker.Helpers
+@{
+    ViewBag.Title = "Details";
+
+    var projHelper = new ProjectHelper();
+    var roleHelper = new UserRolesHelper();
+    var ticketHelper = new TicketHelper();
+}
+
+<!-- page content -->
+<div class="right_col" role="main">
+    <div class="">
+        <div class="page-title">
+            <div class="title_left">
+                <h3>Ticket View: <small> @Model.Project.Name</small></h3>
+                @if (TempData["TicketMessage"] != null)
+                {
+                    <p>@TempData["TicketMessage"]</p>
+                }
+                <br />
+                @if (User.IsInRole("Project Manager"))
+                {
+                    @Html.ActionLink("Back to Index", "Index", "ProjectManager", null, new { @class = "btn btn-primary" })
+                }
+                else if (User.IsInRole("Submitter"))
+                {
+                    @Html.ActionLink("Back to Index", "Index", "Submitter", null, new { @class = "btn btn-primary" })
+                }
+                else if (User.IsInRole("Developer"))
+                {
+                    @Html.ActionLink("Back to Projects", "Index", "Developer", null, new { @class = "btn btn-primary" })
+                }
+                else if (User.IsInRole("Admin"))
+                {
+                    @Html.ActionLink("Back to Dashboard", "Dashboard", "Admin", null, new { @class = "btn btn-primary" })
+                }
+
+            </div>
+
+            <div class="title_right">
+                <div class="col-md-5 col-sm-5 col-xs-12 form-group pull-right top_search">
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Search for...">
+                        <span class="input-group-btn">
+                            <button class="btn btn-default" type="button">Go!</button>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="clearfix"></div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="x_panel">
+                    <div class="x_title">
+                        <h2>@Model.Title<small>Ticket Dashboard</small></h2>
+                        <ul class="nav navbar-right panel_toolbox">
+                            <li>
+                                <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                            </li>
+                            <li>
+                                <a class="close-link"><i class="fa fa-close"></i></a>
+                            </li>
+                        </ul>
+                        <div class="clearfix"></div>
+                    </div>
+
+                    <div class="x_content">
+
+                        <div class="col-md-9 col-sm-9 col-xs-12">
+                            @using (Html.BeginForm("UpdateTicketDetails", "Tickets"))
+                            {
+                                @Html.AntiForgeryToken()
+                                @Html.Hidden("ticketId", Model.Id)
+                                <ul class="stats-overview">
+                                    <li>
+                                        <span class="name"> Ticket Type </span>
+                                        @Html.DropDownList("Types", null, new { @class = "form-control" })
+
+                                    </li>
+                                    <li>
+                                        <span class="name"> Ticket Status </span>
+                                        @if (Model.Status.Name == "Unassigned")
+                                        {
+                                            <span class="value text-primary"> @Model.Status.Name </span>
+                                            if (User.IsInRole("Project Manager") || User.IsInRole("Admin"))
+                                            {
+                                                <small>Assign a developer from "Assign Tickets" on the Project Details Panel.</small>
+                                            }
+                                        }
+                                        else if (Model.AssignedUserId == HttpContext.Current.User.Identity.GetUserId() || User.IsInRole("Project Manager") || User.IsInRole("Admin"))
+                                        {
+                                            @Html.DropDownList("Statuses", null, new { @class = "form-control" })
+                                        }
+                                        else
+                                        {
+                                            <span class="value text-primary"> @Model.Status.Name </span>
+                                        }
+                                    </li>
+                                    <li class="hidden-phone">
+                                        <span class="name"> Ticket Priority </span>
+                                        @Html.DropDownList("Priorities", null, new { @class = "form-control" })
+                                    </li>
+                                </ul>
+                                <div class="row">
+                                    <div class="col-md-2 col-md-offset-10 text-right">
+                                        <button class="btn btn-primary btn-xs" type="submit">Save Changes</button>
+                                    </div>
+                                </div>
+                            }
+                            <br />
+
+                            <div class="row">
+                                <div class="col-md-6 col-md-offset-3 text-center">
+                                    @if (Model.AssignedUserId != null)
+                                    {
+                                        <ul>
+                                            <li class="list-group-item">
+                                                <img src="@Model.AssignedUser.AvatarPath" class="userpicture" />
+                                                <hr />
+                                                <div class="row text-center">
+                                                    <p>@Model.AssignedUser.FullName</p>
+                                                    <small>@Model.AssignedUser.Email</small>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    }
+                                    else
+                                    {
+                                        <p> A developer has not been assigned to your ticket yet. </p>
+                                    }
+
+                                </div>
+
+                            </div>
+                            <div>
+                                <div class="" role="tabpanel" data-example-id="togglable-tabs">
+                                    <ul id="myTab1" class="nav nav-tabs bar_tabs right" role="tablist">
+                                        <li role="presentation" class="active">
+                                            <a href="#tab_content11" id="home-tabb" role="tab" data-toggle="tab" aria-controls="home" aria-expanded="true">Comments</a>
+                                        </li>
+                                        <li role="presentation" class="">
+                                            <a href="#tab_content22" role="tab" id="profile-tabb" data-toggle="tab" aria-controls="profile" aria-expanded="false">Ticket History</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div id="myTabContent2" class="tab-content">
+                                    <div role="tabpanel" class="tab-pane fade active in" id="tab_content11" aria-labelledby="home-tab">
+                                        <h4>Recent Activity</h4>
+                                        <ul class="messages">
+                                            @if (Model.Comments.Count() < 1)
+                                            {
+                                                <li>
+                                                    <p>There are no comments to display.</p>
+                                                </li>
+                                            }
+
+                                            @foreach (var comment in Model.Comments.OrderByDescending(t => t.Created))
+                                            {
+                                                <li>
+                                                    <img src="@comment.User.AvatarPath" class="avatar" alt="Avatar">
+                                                    <div class="message_date">
+                                                        <h3 class="date text-info">@comment.Created.ToString("dd")</h3>
+                                                        <p class="month">@comment.Created.ToString("MMMM")</p>
+                                                    </div>
+                                                    <div class="message_wrapper">
+                                                        <h4 class="heading">@comment.User.FullName</h4>
+                                                        <blockquote class="message">@Html.Raw(comment.CommentBody)</blockquote>
+                                                        <br />
+                                                    </div>
+                                                </li>
+                                            }
+
+
+                                        </ul>
+                                        <!-- end of user messages -->
+                                        <!-- Comment Create Section -->
+                                        @{
+                                            var userId = HttpContext.Current.User.Identity.GetUserId();
+                                            var pm = projHelper.GetProjectUsersInRole("Project Manager", Model.ProjectId).FirstOrDefault();
+                                        }
+                                        @if (ticketHelper.IsUserAssignedToTicket(userId, Model.Id) || ticketHelper.IsUserTicketOwner(userId, Model.Id) || roleHelper.IsUserInRole(userId, "Admin") || userId == pm.Id)
+                                        {
+                                            <h4>Leave a Comment</h4>
+
+                                            using (Html.BeginForm("Create", "TicketComments", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+                                            {
+                                                @Html.AntiForgeryToken()
+                                                @Html.Hidden("ticketId", Model.Id)
+                                                <div class="row">
+                                                    @Html.Editor("CommentBody")
+                                                </div>
+                                                <br />
+                                                <div class="row">
+                                                    <input type="submit" value="Submit" class="btn btn-primary" />
+                                                </div>
+                                            }
+                                        }
+                                    </div>
+                                    <div role="tabpanel" class="tab-pane fade" id="tab_content22" aria-labelledby="profile-tab">
+                                        <ul class="list-unstyled msg_list">
+                                            @foreach (var history in Model.Histories.OrderByDescending(h => h.Changed))
+                                            {
+                                            <li>
+                                                <a>
+                                                    <span class="image">
+                                                        <img src="@history.User.AvatarPath" alt="img" />
+                                                    </span>
+                                                    <span>
+                                                        <span>@history.User.FullName</span>
+                                                        <span class="time">@history.Changed.ToString("MM/dd/yyyy")</span>
+                                                        <br />
+                                                        <span class="time">@history.Changed.ToString("h:mm tt")</span>
+                                                    </span>
+                                                    <span class="message">
+                                                        Changed @history.Property  from @LookupHelper.GetNameFromId(history.Property, history.OldValue) to @LookupHelper.GetNameFromId(history.Property, history.NewValue)
+                                                    </span>
+                                                </a>
+                                            </li>
+                                            }
+                                            
+                                        </ul>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <!-- start project-detail sidebar -->
+                            <!-- end project-detail sidebar -->
+
+                        </div>
+                        <div class="col-md-3 col-sm-3 col-xs-12">
+
+                            <section class="panel">
+
+                                <div class="x_title">
+                                    <h2>Ticket Description</h2>
+                                    <div class="clearfix"></div>
+                                </div>
+                                <div class="panel-body">
+                                    <h3 class="green"><i class="fa fa-ticket"></i> @Model.Title</h3>
+
+                                    <p>@Model.Description</p>
+                                    <div class="text-center mtop20">
+                                        <a href="@Url.Action("TitleEdit", new { id = Model.Id })" class="btn btn-xs btn-warning">Edit Title/Description</a>
+                                    </div>
+                                    <div class="project_detail">
+
+                                        <p class="title">Client</p>
+                                        <p>@Model.OwnerUser.FullName</p>
+                                        <p class="title">Project Leader</p>
+                                        <p>@ViewBag.ProjectManagerName</p>
+                                    </div>
+
+                                    <br />
+                                    <h5 class="title">Ticket Attachments</h5>
+                                    <ul class="list-unstyled project_files">
+                                        @foreach (var attachment in Model.Attachments)
+                                        {
+                                            <li>
+                                                <a href="@Url.Content(attachment.FilePath)" target="_blank"><i class="@AttachmentHelper.GetIcon(attachment.FilePath)"></i> @attachment.FilePath.Split('/')[2]</a>
+                                            </li>
+                                        }
+                                    </ul>
+                                    <br />
+                                    <div class="row">
+
+                                        @using (Html.BeginForm("Create", "TicketAttachments", FormMethod.Post, new { @class = "form-horizontal form-label-left input_mask list-group-item", enctype = "Multipart/form-data" }))
+                                        {
+                                            @Html.AntiForgeryToken()
+                                            @Html.Hidden("ticketId", Model.Id)
+                                            <div class="form-group">
+                                                <div class="col-md-8 col-md-offset-1 col-sm-9 col-xs-12">
+                                                    <input name="file" type="file" class="form-control-file" id="fileUpload" />
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                @Html.Label("AttachmentDescription", "Description: ", new { @class = "control-label col-md-3 col-sm-3 col-xs-12" })
+                                                <div class="col-md-8 col-md-offset-1 col-sm-9 col-xs-12">
+                                                    @Html.TextBox("AttachmentDescription", null, new { @class = "form-control" })
+                                                </div>
+                                            </div>
+                                            <div class="form-group text-center">
+                                                <button type="submit" class="btn btn-xs btn-primary">Add Attachment</button>
+                                            </div>
+
+                                        }
+                                    </div>
+
+                                </div>
+
+                            </section>
+
+                        </div>
+                    </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /page content -->
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <script type="text/javascript">
+        $(function () {
+            tinymce.init({
+                selector: '#CommentBody'
+            });
+        });
+    </script>
+}

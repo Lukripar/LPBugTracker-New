@@ -1,0 +1,114 @@
+﻿@model LPBugTracker.Models.Ticket
+
+@using LPBugTracker.Models
+@{
+    ViewBag.Title = "TicketCreate";
+    ApplicationDbContext db = new ApplicationDbContext();
+}
+
+<!-- page content -->
+<div class="right_col" role="main">
+    <div class="">
+        <div class="page-title">
+            <div class="title_left">
+                <h3>New ticket</h3>
+            </div>
+
+            <div class="title_right">
+                <div class="col-md-5 col-sm-5 col-xs-12 form-group pull-right top_search">
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Search for...">
+                        <span class="input-group-btn">
+                            <button class="btn btn-default" type="button">Go!</button>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="clearfix"></div>
+
+        <div class="row">
+            <div class="col-md-12 col-sm-12 col-xs-12">
+                <div class="x_panel">
+                    <div class="x_title">
+                        <h2>@ViewBag.ProjectName</h2>
+                        <ul class="nav navbar-right panel_toolbox">
+                            <li>
+                                <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                            </li>
+                            <li>
+                                <a class="close-link"><i class="fa fa-close"></i></a>
+                            </li>
+                        </ul>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="x_content">
+                        @using (Html.BeginForm())
+                        {
+                            @Html.AntiForgeryToken()
+                            @Html.HiddenFor(m => m.StatusId)
+                            @Html.HiddenFor(m => m.TypeId)
+                            @Html.HiddenFor(m => m.ProjectId)
+                            <div class="row form-horizontal">
+                                <div class="row">
+                                    <div class="col-md-8">
+                                        <div class="form-group">
+                                            <h4>@Html.LabelFor(m => m.Title, "Title", new { @class = "control-label col-md-2" })</h4>
+                                            <div class="col-md-10">
+                                                @Html.EditorFor(model => model.Title, new { htmlAttributes = new { @class = "form-control" } })
+                                                @Html.ValidationMessageFor(model => model.Title, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <h4>@Html.LabelFor(m => m.Description, "Description", new { @class = "control-label col-md-2" })</h4>
+                                            <div class="col-md-10">
+                                                @Html.TextAreaFor(model => model.Description,5,5, new { @class = "form-control" })
+                                                @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <h4>@Html.LabelFor(model => model.PriorityId, "PriorityId", htmlAttributes: new { @class = "control-label col-md-2" })</h4>
+
+                                            <div class="col-md-9 col-md-offset-1">
+                                                @Html.DropDownList("PriorityId", null, htmlAttributes: new { @class = "form-control" })
+                                                @Html.ValidationMessageFor(model => model.PriorityId, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <h4>@Html.LabelFor(m => m.TypeId, "Type", new { @class = "control-label col-md-2" })</h4>
+
+                                            <div class="col-md-9 col-md-offset-1">
+                                                @foreach (var type in db.Types)
+                                                {
+                                                    <div class="row">
+                                                            @Html.RadioButtonFor(t => t.TypeId, type.Name) @type.Name
+                                                    </div>
+                                                    
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row text-center">
+                                    <button class="btn btn-primary" type="submit">Submit</button>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /page content -->
+<!-- footer content -->
+<footer>
+    <div class="pull-right">
+        A Lukas Parsons Portfolio Project. (2019)
+    </div>
+    <div class="clearfix"></div>
+</footer>
+<!-- /footer content -->

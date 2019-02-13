@@ -1,0 +1,157 @@
+﻿@using LPBugTracker.Models
+@model LoginOrRegisterViewModel
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <!-- Meta, title, CSS, favicons, etc. -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Solution Center - Login</title>
+    <link rel="icon" type="image/x-icon" href="~/img/fav.jpg" />
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/Content/font-awesome.min.css" rel="stylesheet" />
+    <link href="~/Content/nprogress.css" rel="stylesheet" />
+    <link href="~/Libs/Gentelella/css/custom.min.css" rel="stylesheet" />
+    <!-- Bootstrap -->
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+    <!-- Font Awesome -->
+    <link href="~/Content/font-awesome.min.css" rel="stylesheet" />
+    <!-- NProgress -->
+    <link href="~/Content/nprogress.css" rel="stylesheet" />
+    <!-- Animate.css -->
+    <link href="~/Content/animate.min.css" rel="stylesheet" />
+</head>
+<body class="login">
+    <div>
+        <a class="hiddenanchor" id="signup"></a>
+        <a class="hiddenanchor" id="signin"></a>
+        <div class="login_wrapper">
+            <div class="animate form login_form">
+                <section id="loginForm" class="login_content">
+                    @using (Html.BeginForm("Login", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post))
+                    {
+                        @Html.AntiForgeryToken()
+                        <h1>Solution Center</h1>
+
+                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                        <div>
+                            @Html.TextBoxFor(m => m.Login.Email, new { @class = "form-control", placeholder = "Email" })
+                            @Html.ValidationMessageFor(m => m.Login.Email, "", new { @class = "text-danger" })
+                        </div>
+                        <div>
+                            @Html.PasswordFor(m => m.Login.Password, new { @class = "form-control", placeholder = "Password" })
+                            @Html.ValidationMessageFor(m => m.Login.Password, "", new { @class = "text-danger" })
+                        </div>
+                        <div>
+                            <input type="submit" value="Log in" class="btn btn-default submit" />
+                                @Html.ActionLink("Lost your password?", "ForgotPassword", "Account")
+                        </div>
+                        <div class="clearfix"></div>
+                        <div class="separator">
+                            <p class="change_link">
+                                New to site?
+                                <a href="#signup" class="to_register"> Create Account </a>
+                            </p>
+                            <div class="clearfix"></div>
+                            <br />
+                            <div>
+
+                                <p>©2016 All Rights Reserved. <br /> A Lukas Parsons Portfolio Project</p>
+                                <h1><i class="fa fa-check-square-o"></i> Solution Center</h1>
+                            </div>
+                        </div>
+                    }
+
+                </section>
+            </div>
+            <div id="register" class="animate form registration_form">
+                <section class="login_content">
+                    @using (Html.BeginForm("Register", "Account", FormMethod.Post))
+                    {
+                        @Html.AntiForgeryToken()
+                        <h1>Create Account</h1>
+                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                        <div>
+                            @Html.TextBoxFor(m => m.Register.FirstName, new { @class = "form-control", placeholder = "First Name" })
+                            @Html.ValidationMessageFor(m => m.Register.FirstName, "", new { @class = "text-danger" })
+                        </div>
+                        <div>
+                            @Html.TextBoxFor(m => m.Register.LastName, new { @class = "form-control", placeholder = "Last Name" })
+                            @Html.ValidationMessageFor(m => m.Register.LastName, "", new { @class = "text-danger" })
+                        </div>
+                        <div>
+                            @Html.TextBoxFor(m => m.Register.DisplayName, new { @class = "form-control", placeholder = "Display Name" })
+                            @Html.ValidationMessageFor(m => m.Register.DisplayName, "", new { @class = "text-danger" })
+                        </div>
+                        <div>
+                            @Html.TextBoxFor(m => m.Register.Email, new { @class = "form-control", placeholder = "Email" })
+                            @Html.ValidationMessageFor(m => m.Register.Email, "", new { @class = "text-danger" })
+                        </div>
+                        <div>
+                            @Html.PasswordFor(m => m.Register.Password, new { @class = "form-control", placeholder = "Password" })
+                            @Html.ValidationMessageFor(m => m.Register.Password, "", new { @class = "text-danger" })
+                        </div>
+                        <div>
+                            @Html.PasswordFor(m => m.Register.ConfirmPassword, new { @class = "form-control", placeholder = "Confirm Password" })
+                            @Html.ValidationMessageFor(m => m.Register.ConfirmPassword, "", new { @class = "text-danger" })
+                        </div>
+                        <div>
+                            <input type="submit" value="Register" class="btn btn-default submit" />
+                        </div>
+                        <div class="clearfix"></div>
+                        <div class="separator">
+                            <p class="change_link">
+                                Already a member ?
+                                <a href="#signin" class="to_register"> Log in </a>
+                            </p>
+                            <div class="clearfix"></div>
+                            <br />
+                            <div>
+
+                                <p>©2016 All Rights Reserved. <br /> A Lukas Parsons Portfolio Project</p>
+                                <h1><i class="fa fa-check-square-o"></i> Solution Center</h1>
+                            </div>
+                        </div>
+                    }
+                </section>
+            </div>
+            @*<div id="forgot" class="animate form forgot-form">
+                <section class="login_content">
+                    @using (Html.BeginForm("ForgotPassword", "Account", FormMethod.Post))
+                    {
+                        @Html.AntiForgeryToken()
+                        <h1>Create Account</h1>
+                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                        <div>
+                            @Html.TextBoxFor(m => m.Forgot.Email, new { @class = "form-control", placeholder = "Email" })
+                            @Html.ValidationMessageFor(m => m.Forgot.Email, "", new { @class = "text-danger" })
+                        </div>
+                        <div>
+                            <input type="submit" value="Submit" class="btn btn-default submit" />
+                        </div>
+                        <div class="clearfix"></div>
+                        <div class="separator">
+                            <p class="change_link">
+                                Already a member ?
+                                <a href="#signin" class="to_register"> Log in </a>
+                            </p>
+                            <div class="clearfix"></div>
+                            <br />
+                            <div>
+
+                                <p>©2016 All Rights Reserved. <br /> A Lukas Parsons Portfolio Project</p>
+                                <h1><i class="fa fa-check-square-o"></i> Solution Center</h1>
+                            </div>
+                        </div>
+                    }
+                </section>
+            </div>*@
+        </div>
+    </div>
+</body>
+</html>

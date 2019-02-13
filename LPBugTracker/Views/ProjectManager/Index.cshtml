@@ -1,0 +1,398 @@
+﻿@model IEnumerable<LPBugTracker.Models.Project>
+@using LPBugTracker.Helpers
+@using LPBugTracker.Models
+@{
+    ViewBag.Title = "Index";
+    var ticketHelper = new TicketHelper();
+    var roleHelper = new UserRolesHelper();
+    var projHelper = new ProjectHelper();
+    ApplicationDbContext db = new ApplicationDbContext();
+    var count = 1;
+}
+
+<!-- page content -->
+<div class="right_col" role="main">
+    <div class="">
+        <div class="page-title">
+            <div class="title_left">
+                <h3>My Projects</h3>
+                @if (TempData["Message"] != null)
+                {
+                    <p>@TempData["Message"]</p>
+                }
+            </div>
+
+            <div class="title_right">
+                <div class="col-md-5 col-sm-5 col-xs-12 form-group pull-right top_search">
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Search for...">
+                        <span class="input-group-btn">
+                            <button class="btn btn-default" type="button">Go!</button>
+                        </span>
+                    </div>
+                    @if (User.IsInRole("Project Manager"))
+                    {
+                        @Html.ActionLink("New Project...", "ProjectCreate", "ProjectManager", null, new { @class = "btn btn-primary btn-sm pull-right" })
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="clearfix"></div>
+        @foreach (var project in Model)
+        {
+
+            <div class="row">
+                <div class="col-md-12 col-sm-12 col-xs-12">
+                    <div class="x_panel collapsed">
+                        <div class="x_title">
+                            <h2>@project.Name</h2>
+
+                            <ul class="nav navbar-right panel_toolbox">
+                                <li>
+                                    <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                                </li>
+                                <li>
+                                    <a class="close-link"><i class="fa fa-close"></i></a>
+                                </li>
+                            </ul>
+                            <div class="clearfix"></div>
+                        </div>
+                        <div class="x_content">
+
+                            <div class="">
+                                <!-- Tabs -->
+                                <div class="row" role="tabpanel" data-example-id="togglable-tabs">
+                                    <ul id="myTab1" class="nav nav-tabs bar_tabs right" role="tablist">
+                                        <li role="presentation" class="active">
+                                            <a href="#tab_content11@(count)" id="home-tab@(count)" role="tab" data-toggle="tab" aria-controls="home" aria-expanded="true">Tickets</a>
+                                        </li>
+                                        <li role="presentation" class="">
+                                            <a href="#tab_content22@(count)" role="tab" id="profile-tab@(count)" data-toggle="tab" aria-controls="profile" aria-expanded="false">Assign Tickets</a>
+                                        </li>
+                                        <li role="presentation" class="">
+                                            <a href="#tab_content33@(count)" role="tab" id="profile-tab3@(count)" data-toggle="tab" aria-controls="profile" aria-expanded="false">People</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                                @Html.ActionLink("Edit Project Name/Description", "EditProjectDetails", "ProjectManager", new { projectId = project.Id }, new { @class = "btn btn-primary btn-xs" })
+                                <div class="row">
+                                    <div class="col-md-8">
+                                        <h4>Project Description</h4>
+                                        <p>@project.Description</p>
+                                    </div>
+                                </div>
+                                <div class="row top_tiles">
+                                    <!-- Open tickets -->
+                                    <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                        <div class="tile-stats">
+                                            <div class="icon"><i class="fa fa-circle-o"></i></div>
+                                            <div class="count">@ticketHelper.GetOpenTickets(project.Id).Count()</div>
+                                            <h3>Open Tickets</h3>
+                                            <p>Tickets with a status of "Open"</p>
+                                        </div>
+                                    </div>
+
+                                    <!-- Unassigned tickets -->
+                                    <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                        <div class="tile-stats">
+                                            <div class="icon"><i class="fa fa-bell-slash-o"></i></div>
+                                            <div class="count">@ticketHelper.GetUnassignedTickets(project.Id).Count()</div>
+                                            <h3>Unassigned Tickets</h3>
+                                            <p>Tickets to be assigned to a developer ASAP.</p>
+                                        </div>
+                                    </div>
+
+                                    @if (ticketHelper.GetInfoNeededTickets(project.Id).Count() > 0)
+                                    {
+                                        <!-- Contact Needed tickets -->
+                                        <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                            <div class="tile-stats">
+                                                <div class="icon"><i class="fa fa-phone"></i></div>
+                                                <div class="count">@ticketHelper.GetInfoNeededTickets(project.Id).Count()</div>
+                                                <h3>Client Contact Necessary</h3>
+                                                <p>More info needed form the client for progress.</p>
+                                            </div>
+                                        </div>
+                                    }
+
+                                    @if (ticketHelper.GetUrgentTickets(project.Id).Count() > 0)
+                                    {
+                                        <!-- Urgent tickets -->
+                                        <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                            <div class="tile-stats">
+                                                <div class="icon"><i class="fa fa-warning"></i></div>
+                                                <div class="count">@ticketHelper.GetUrgentTickets(project.Id).Count()</div>
+                                                <h3>Urgent Tickets</h3>
+                                                <p>Tickets with an "Urgent" or "High" priority.</p>
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                                <div class="row">
+                                    <div id="myTabContent2" class="tab-content">
+                                        <div role="tabpanel" class="tab-pane fade active in" id="tab_content11@(count)" aria-labelledby="home-tab">
+
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <table class="table table-striped table-bordered dt-responsive nowrap jq-data" id="ticketTable@(count)" cellspacing="0" width="100%">
+                                                        <thead>
+                                                            <tr>
+
+                                                                <th style="width: 20%">Project Name</th>
+                                                                <th>Submitter</th>
+                                                                <th>Developer</th>
+                                                                <th>Status</th>
+                                                                <th>Request Type</th>
+                                                                <th>Priority</th>
+                                                                <th style="width: 20%">#Edit</th>
+
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            @{ var unassignedTickets = project.Tickets.Where(t => t.Status.Name != "Resolved");}
+                                                            @foreach (var ticket in unassignedTickets)
+                                                            {
+                                                                <tr>
+                                                                    <td>
+                                                                        <a>@ticket.Title</a>
+                                                                        <br />
+                                                                        <small>Created @ticket.Created</small>
+                                                                    </td>
+                                                                    <td>
+                                                                        <img src="@ticket.OwnerUser.AvatarPath" class="avatar" alt="Avatar" />
+                                                                        <br />
+                                                                        <small>@ticket.OwnerUser.FullName</small>
+                                                                    </td>
+                                                                    <td>
+                                                                        @if (ticket.AssignedUserId != null)
+                                                                        {
+                                                                            <img src="@ticket.AssignedUser.AvatarPath" class="avatar" alt="Avatar" />
+                                                                            <br />
+                                                                            <small>@ticket.AssignedUser.FullName</small>
+                                                                        }
+
+                                                                    </td>
+                                                                    <td class="text-center">
+                                                                        @if (ticket.Status.Name == "Unassigned")
+                                                                        {
+                                                                            <button class="btn btn-sm btn-danger">Unassigned</button>
+                                                                        }
+                                                                        else if (ticket.Status.Name == "Open")
+                                                                        {
+                                                                            <button class="btn btn-sm btn-primary">Open</button>
+                                                                        }
+                                                                        else if (ticket.Status.Name == "Resolved")
+                                                                        {
+                                                                            <button class="btn btn-sm btn-success">Closed</button>
+                                                                        }
+                                                                        else if (ticket.Status.Name == "Need More Info")
+                                                                        {
+                                                                            <button class="btn btn-sm btn-warning">Contact Needed</button>
+                                                                        }
+                                                                    </td>
+                                                                    <td class="text-center">
+                                                                        @if (ticket.Type.Name == "Bug")
+                                                                        {
+                                                                            <button class="btn btn-sm btn-danger">Bug</button>
+                                                                        }
+                                                                        else if (ticket.Type.Name == "Feature Request")
+                                                                        {
+                                                                            <button class="btn btn-sm btn-success">Feature Request</button>
+                                                                        }
+                                                                        else if (ticket.Type.Name == "Documentation")
+                                                                        {
+                                                                            <button class="btn btn-sm btn-warning">Documentation</button>
+                                                                        }
+                                                                        else if (ticket.Type.Name == "Other")
+                                                                        {
+                                                                            <button class="btn btn-sm btn-primary">Other</button>
+                                                                        }
+                                                                    </td>
+                                                                    <td class="text-center">
+                                                                        @if (ticket.Priority.Name == "None")
+                                                                        {
+                                                                            <button class="btn btn-sm btn-default">None</button>
+                                                                        }
+                                                                        else if (ticket.Priority.Name == "Low")
+                                                                        {
+                                                                            <button class="btn btn-sm btn-success">Low</button>
+                                                                        }
+                                                                        else if (ticket.Priority.Name == "Medium")
+                                                                        {
+                                                                            <button class="btn btn-sm btn-primary">Medium</button>
+                                                                        }
+                                                                        else if (ticket.Priority.Name == "High")
+                                                                        {
+                                                                            <button class="btn btn-sm btn-warning">High</button>
+                                                                        }
+                                                                        else if (ticket.Priority.Name == "Urgent")
+                                                                        {
+                                                                            <button class="btn btn-sm btn-danger">Urgent</button>
+                                                                        }
+                                                                    </td>
+                                                                    <!-- These don't do anything yet. -->
+                                                                    <td class="text-center">
+                                                                        <a href="@Url.Action("Details", "Tickets", new { id = ticket.Id })" class="btn btn-primary btn-xs"><i class="fa fa-folder"></i> View </a>
+                                                                    </td>
+                                                                </tr>
+                                                            }
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+
+
+                                        </div>
+                                        <div role="tabpanel" class="tab-pane fade" id="tab_content22@(count)" aria-labelledby="profile-tab">
+                                            @if (project.Tickets.Where(t => t.Project.Id == project.Id && t.Status.Name == "Unassigned").Count() > 0)
+                                            {
+
+                                                //Ask how to get this form working.
+
+
+
+                                                <div class="row">
+                                                    <table class="table">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Ticket</th>
+                                                                <th>Priority</th>
+                                                                <th>Developer</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            @{ var counter = 0; }
+                                                            @foreach (var ticket in project.Tickets.Where(t => t.Project.Id == project.Id && t.Status.Name == "Unassigned"))
+                                                            {
+                                                                using (Html.BeginForm("AssignTicket", "ProjectManager", FormMethod.Post))
+                                                                {
+                                                                    @Html.AntiForgeryToken();
+                                                                    {
+                                                                        var ticketId = ticket.Id;
+                                                                        @Html.Hidden("ticketId", ticket.Id);
+                                                                        //I need to somehow pass the ticket ID for each of these as well.
+                                                                        <tr>
+                                                                            <td>@ticket.Title</td>
+                                                                            <td>@ticket.Priority.Name</td>
+                                                                            <td>@Html.DropDownList("Developers", new SelectList(projHelper.GetProjectUsersInRole("Developer", ticket.ProjectId), "Id", "FullName"), "-- Assign a Developer --", new { @class = "form-control" })</td>
+                                                                            <td><button class="text-right btn-success" type="submit">Submit</button></td>
+                                                                        </tr>
+
+
+
+                                                                        counter++;
+
+                                                                    }
+                                                                }
+                                                            }
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                                <div class="row text-right">
+
+                                                </div>
+
+                                            }
+                                            else
+                                            {
+                                                <div class="row text-center">
+                                                    <p>No unassigned Tickets to Display. Good work!</p>
+                                                </div>
+
+                                            }
+                                        </div>
+                                        <div role="tabpanel" class="tab-pane fade" id="tab_content33@(count)" aria-labelledby="profile-tab">
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    @{
+                                                        var projUsers = projHelper.UsersOnProject(project.Id);
+                                                        var subs = new List<ApplicationUser>();
+                                                        var devs = new List<ApplicationUser>();
+                                                        foreach (var user in projUsers)
+                                                        {
+                                                            if (roleHelper.IsUserInRole(user.Id, "Submitter"))
+                                                            {
+                                                                subs.Add(user);
+                                                            }
+                                                            else if (roleHelper.IsUserInRole(user.Id, "Developer"))
+                                                            {
+                                                                devs.Add(user);
+                                                            }
+                                                        }
+                                                    }
+                                                    @*Submitter*@
+                                                    <div class="col-md-2 text-right">
+                                                        <h4>Submitters:</h4>
+                                                    </div>
+                                                    <div class="col-md-10">
+                                                        <ul class="list-group">
+                                                            @foreach (var sub in subs)
+                                                            {
+                                                                <li class="list-group-item">
+                                                                    <img src="@sub.AvatarPath" class="userpicture" />
+                                                                    <div class="row text-center">
+                                                                        <p>@sub.FullName</p>
+                                                                    </div>
+
+                                                                </li>
+                                                            }
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    @*devs*@
+                                                    <div class="col-md-2 text-right">
+                                                        <h4>Developers</h4>
+                                                    </div>
+                                                    <div class="col-md-10">
+                                                        <ul class="list-group">
+                                                            @foreach (var dev in devs)
+                                                            {
+                                                                <li class="list-group-item">
+                                                                    <img src="@dev.AvatarPath" class="userpicture" />
+                                                                    <div class="row text-center">
+                                                                        <p>@dev.FullName</p>
+                                                                    </div>
+                                                                </li>
+                                                            }
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-12 text-center">
+                                                        @*TODO: Get this button wired up to a modal holding a form to
+                                                        edit the developers assigned to this project.*@
+                                                        @Html.ActionLink("Edit Project Devs", "Edit", new { projectId = project.Id }, new { @class = "btn btn-primary" })
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            count++;
+        }
+
+
+    </div>
+</div>
+<!-- /page content -->
+<!-- footer content -->
+<footer>
+    <div class="pull-right">
+        A Lukas Parsons Portfolio Project. (2019)
+    </div>
+    <div class="clearfix"></div>
+</footer>
+<!-- /footer content -->
+<script>
+</script>

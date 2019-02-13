@@ -1,0 +1,145 @@
+﻿@model IEnumerable<LPBugTracker.Models.Ticket>
+@{
+    ViewBag.Title = "MyTicketsIndex";
+}
+
+
+<!-- page content -->
+<div class="right_col" role="main">
+    <div class="">
+        <div class="page-title">
+            <div class="title_left">
+                <h3>My Open Tickets</h3>
+
+            </div>
+
+            <div class="title_right">
+                <div class="col-md-5 col-sm-5 col-xs-12 form-group pull-right top_search">
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Search for...">
+                        <span class="input-group-btn">
+                            <button class="btn btn-default" type="button">Go!</button>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="clearfix"></div>
+
+        <div class="row">
+            <div class="col-md-12 col-sm-12 col-xs-12">
+                <div class="x_panel">
+                    <div class="x_title">
+                        @*<h2>Plain Page</h2>*@
+                        <ul class="nav navbar-right panel_toolbox">
+                            <li>
+                                <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                            </li>
+                        </ul>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="x_content">
+                        <table class="table table-striped jq-data">
+                            <thead>
+                                <tr>
+                                    <th>Ticket Name</th>
+                                    <th>Project Name</th>
+                                    <th>Owner</th>
+                                    <th>Ticket Priority</th>
+                                    <th>Ticket Type</th>
+                                    <th>Ticket Status</th>
+                                    <th>Created</th>
+                                    <th>Edit</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var ticket in Model)
+                                {
+                                    <tr>
+                                        <td>@ticket.Title</td>
+                                        <td>@ticket.Project.Name</td>
+                                        <td>
+                                            @ticket.OwnerUser.Email
+                                        </td>
+                                        <td>
+                                            @if (ticket.Priority.Name == "None")
+                                            {
+                                                <button class="btn btn-sm btn-default">None</button>
+                                            }
+                                            else if (ticket.Priority.Name == "Low")
+                                            {
+                                                <button class="btn btn-sm btn-success">Low</button>
+                                            }
+                                            else if (ticket.Priority.Name == "Medium")
+                                            {
+                                                <button class="btn btn-sm btn-primary">Medium</button>
+                                            }
+                                            else if (ticket.Priority.Name == "High")
+                                            {
+                                                <button class="btn btn-sm btn-warning">High</button>
+                                            }
+                                            else if (ticket.Priority.Name == "Urgent")
+                                            {
+                                                <button class="btn btn-sm btn-danger">Urgent</button>
+                                            }
+                                        </td>
+                                        <td>
+                                            @if (ticket.Type.Name == "Bug")
+                                            {
+                                                <button class="btn btn-sm btn-danger">Bug</button>
+                                            }
+                                            else if (ticket.Type.Name == "Feature Request")
+                                            {
+                                                <button class="btn btn-sm btn-success">Feature</button>
+                                            }
+                                            else if (ticket.Type.Name == "Documentation")
+                                            {
+                                                <button class="btn btn-sm btn-warning">Documentation</button>
+                                            }
+                                            else if (ticket.Type.Name == "Other")
+                                            {
+                                                <button class="btn btn-sm btn-primary">Other</button>
+                                            }
+                                        </td>
+                                        <td>
+                                            @if (ticket.Status.Name == "Unassigned")
+                                            {
+                                                <button class="btn btn-sm btn-danger">Unassigned</button>
+                                            }
+                                            else if (ticket.Status.Name == "Open")
+                                            {
+                                                <button class="btn btn-sm btn-primary">Open</button>
+                                            }
+                                            else if (ticket.Status.Name == "Resolved")
+                                            {
+                                                <button class="btn btn-sm btn-success">Closed</button>
+                                            }
+                                            else if (ticket.Status.Name == "Need More Info")
+                                            {
+                                                <button class="btn btn-sm btn-warning">On Hold</button>
+                                            }
+                                        </td>
+                                        <td>@ticket.Created.ToString("MM/dd/yyyy")</td>
+                                        <td>
+                                            @Html.ActionLink("View", "Details", "Tickets", new { id = ticket.Id }, new { @class = "btn btn-primary btn-xs" })
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /page content -->
+<!-- footer content -->
+<footer>
+    <div class="pull-right">
+        Gentelella - Bootstrap Admin Template by <a href="https://colorlib.com">Colorlib</a>
+    </div>
+    <div class="clearfix"></div>
+</footer>
+<!-- /footer content -->
