@@ -37,5 +37,17 @@ namespace LPBugTracker.Controllers
 
             return View(userTickets);
         }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult NotificationRead(int notificationId)
+        {
+            var notification = db.Notifications.Find(notificationId);
+            notification.Read = true;
+            db.Entry(notification).Property(n => n.Read).IsModified = true;
+            db.SaveChanges();
+            var returnUrl = Request.ServerVariables["http_referer"];
+            return Redirect(returnUrl);
+        }
     }
 }

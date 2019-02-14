@@ -213,28 +213,35 @@
                                 <ul id="menu1" class="dropdown-menu list-unstyled msg_list" role="menu">
                                     @foreach (var notification in userNotifications.OrderByDescending(n => n.Created).Take(10))
                                     {
-                                        <li>
-                                            <a>
-                                                <span class="image"><i class="fa fa-envelope-o"></i></span>
-                                                <span>
-                                                    <span>@StringHelper.TruncString(notification.Ticket.Title, 17)</span>
-                                                    <span class="time">@notification.Created.ToString("MM/dd/yyyy") at @notification.Created.ToString("h:mm tt")</span>
-                                                </span>
-                                                <span class="message">
-                                                    @Html.Raw(notification.Message)
-                                                </span>
-                                            </a>
-                                        </li>
+                                        var count = 0;
+                                        using (Html.BeginForm("NotificationRead", "Developer",FormMethod.Post, new { id = "notificationForm" + count }))
+                                        {
+                                            @Html.AntiForgeryToken()
+                                            @Html.Hidden("notificationId", notification.Id)
+                                            <li>
+                                                <a href="javascript:{}" onclick="document.getElementById('notificationForm@(count)').submit();">
+                                                    <span class="image"><i class="fa fa-envelope-o"></i></span>
+                                                    <span>
+                                                        <span>@StringHelper.TruncString(notification.Ticket.Title, 17)</span>
+                                                        <span class="time">@notification.Created.ToString("MM/dd/yyyy") at @notification.Created.ToString("h:mm tt")</span>
+                                                    </span>
+                                                    <span class="message">
+                                                        @notification.Message
+                                                    </span>
+                                                </a>
+                                            </li>
+                                        }
+                                        count++;
                                     }
 
-                                    <li>
+                                    @*<li>
                                         <div class="text-center">
                                             <a>
                                                 <strong>See All Alerts</strong>
                                                 <i class="fa fa-angle-right"></i>
                                             </a>
                                         </div>
-                                    </li>
+                                    </li>*@
                                 </ul>
                             </li>
                         </ul>
