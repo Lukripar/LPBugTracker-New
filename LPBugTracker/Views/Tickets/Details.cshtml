@@ -128,6 +128,12 @@
                                                     <p>@Model.AssignedUser.FullName</p>
                                                     <small>@Model.AssignedUser.Email</small>
                                                 </div>
+                                                @if(User.IsInRole("Project Manager") || User.IsInRole("Admin"))
+                                                {
+                                                    <br />
+                                                    @Html.ActionLink("Change Assigned Dev", "EditTicketDev", "ProjectManager", new { ticketId = Model.Id }, new { @class = "btn btn-primary btn-xs" })
+
+                                                }
                                             </li>
                                         </ul>
                                     }
@@ -204,34 +210,51 @@
                                         }
                                     </div>
                                     <div role="tabpanel" class="tab-pane fade" id="tab_content22" aria-labelledby="profile-tab">
+                                        
                                         <ul class="list-unstyled msg_list">
                                             @foreach (var history in Model.Histories.OrderByDescending(h => h.Changed))
                                             {
-                                            <li>
+                                            <li class="widthFix">
                                                 <a>
                                                     <span class="avatar">
-                                                        <img src="@history.User.AvatarPath" alt="img" class=""/>
+                                                        <img src="@history.User.AvatarPath" alt="img" class="" />
                                                     </span>
                                                     <span>
+
                                                         <span>@history.User.FullName</span>
-                                                        <span class="time">@history.Changed.ToString("MM/dd/yyyy")</span>
-                                                        <br />
-                                                        <span class="time">@history.Changed.ToString("h:mm tt")</span>
+                                                        <span class="time">
+                                                            @history.Changed.ToString("MM/dd/yyyy")
+                                                            <br />@history.Changed.ToString("h:mm tt")
+                                                        </span>
+
                                                     </span>
-                                                    
                                                     <span class="message">
-                                                        @if (history.Property != "Title" && history.Property != "Description")
+                                                        @if (history.Property == "AssignedUserId" && history.NewValue == "")
                                                         {
                                                             <br />
                                                             <span>
-                                                                Changed @history.Property from @LookupHelper.GetNameFromId(history.Property, history.OldValue) to @LookupHelper.GetNameFromId(history.Property, history.NewValue)
+                                                                Unassigned <b>@LookupHelper.GetNameFromId(history.Property, history.OldValue)</b> from the ticket.
+                                                            </span>
+                                                        }
+                                                        else if (history.Property == "AssignedUserId" && history.OldValue == "")
+                                                        {
+                                                            <br />
+                                                            <span>
+                                                                Assigned <b>@LookupHelper.GetNameFromId(history.Property, history.NewValue)</b> to the ticket.
+                                                            </span>
+                                                        }
+                                                        else if (history.Property != "Title" && history.Property != "Description")
+                                                        {
+                                                            <br />
+                                                            <span>
+                                                                Changed @history.Property from <i><b>@LookupHelper.GetNameFromId(history.Property, history.OldValue)</b></i> to <i><b>@LookupHelper.GetNameFromId(history.Property, history.NewValue)</b></i>
                                                             </span>
                                                         }
                                                         else
                                                         {
                                                             <br />
                                                             <span>
-                                                                Changed @history.Property from <b>@history.OldValue</b> to <b>@history.NewValue</b>
+                                                                Changed @history.Property from <b><i>@*@StringHelper.TruncString(history.OldValue, 50)*@ @history.OldValue</i></b> to <b><i>@*@StringHelper.TruncString(history.NewValue, 50)*@ @history.NewValue</i></b>
                                                             </span>
                                                         }
                                                     </span>

@@ -202,6 +202,7 @@
     <Compile Include="Helpers\LookupHelper.cs" />
     <Compile Include="Helpers\NotificationHelper.cs" />
     <Compile Include="Helpers\ProjectHelper.cs" />
+    <Compile Include="Helpers\StringHelper.cs" />
     <Compile Include="Helpers\TicketHelper.cs" />
     <Compile Include="Helpers\UserHelper.cs" />
     <Compile Include="Helpers\UserRolesHelper.cs" />
@@ -557,6 +558,7 @@
     <Content Include="Views\Users\Details.cshtml" />
     <Content Include="Views\Users\Edit.cshtml" />
     <Content Include="Views\Users\Index.cshtml" />
+    <Content Include="Views\ProjectManager\EditTicketDev.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

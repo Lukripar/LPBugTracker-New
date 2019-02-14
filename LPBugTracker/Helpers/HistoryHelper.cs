@@ -23,16 +23,21 @@ namespace LPBugTracker.Helpers
                 var oldProp = oldTicket.GetType().GetProperty(propertyInfo.Name);
                 var newProp = newTicket.GetType().GetProperty(propertyInfo.Name);
 
-                var oldPropValue = oldProp.GetValue(oldTicket).ToString();
-                var newPropValue = newProp.GetValue(newTicket).ToString();
-
-                if (oldPropValue != newPropValue)
+                var oldPropValue = oldProp.GetValue(oldTicket, null);
+                var newPropValue = newProp.GetValue(newTicket, null);
+                if (oldPropValue == null || newPropValue == null)
+                {
+                    Console.WriteLine("Is Null");
+                }
+                oldPropValue = oldPropValue ?? "";
+                newPropValue = newPropValue ?? "";
+                if (oldPropValue.ToString() != newPropValue.ToString())
                 {
                     var history = new TicketHistory
                     {
                         Changed = DateTime.Now,
-                        OldValue = oldPropValue,
-                        NewValue = newPropValue,
+                        OldValue = oldPropValue.ToString(),
+                        NewValue = newPropValue.ToString(),
                         Property = propertyInfo.Name,
                         TicketId = newTicket.Id,
                         UserId = HttpContext.Current.User.Identity.GetUserId()

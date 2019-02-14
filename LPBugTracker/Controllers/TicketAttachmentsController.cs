@@ -20,6 +20,7 @@ namespace LPBugTracker.Controllers
         private TicketHelper ticketHelper = new TicketHelper();
         private UserRolesHelper roleHelper = new UserRolesHelper();
         private ProjectHelper projHelper = new ProjectHelper();
+        private NotificationHelper notifyHelper = new NotificationHelper();
 
         // GET: TicketAttachments
         public ActionResult Index()
@@ -85,14 +86,15 @@ namespace LPBugTracker.Controllers
 
                 var comment = new TicketComment
                 {
-                    CommentBody = $"<small>Uploaded an Attachment titled: <i>{Path.GetFileName(file.FileName)}</i> at {DateTime.Now.ToString("h:mm tt")}</small>",
+                    CommentBody = $"<small>Uploaded an Attachment titled: <i>{Path.GetFileName(file.FileName)}</i> at {DateTime.Now.ToString("h:mm tt")}" +
+                    $"<br />Attachment Description: <i>{ticketAttachment.Description}</i></small>",
                     Created = DateTime.Now,
                     TicketId = ticketAttachment.TicketId,
                     UserId = ticketAttachment.UserId
                 };
                 db.Comments.Add(comment);
-
                 db.SaveChanges();
+                notifyHelper.attachmentNotify(comment);
                 return RedirectToAction("Details", "Tickets", new { id = ticketAttachment.TicketId });
             }
 

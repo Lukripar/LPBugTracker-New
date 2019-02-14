@@ -98,6 +98,9 @@ namespace LPBugTracker.Controllers
             return View(ticketNotification);
         }
 
+        
+        
+
         // GET: TicketNotifications/Delete/5
         public ActionResult Delete(int? id)
         {

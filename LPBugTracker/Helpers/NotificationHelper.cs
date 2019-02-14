@@ -39,7 +39,7 @@ namespace LPBugTracker.Helpers
                 TicketId = newTicket.Id
             };
 
-            if (oldUserId == null && newUserId != null)
+            if ((oldUserId == null || oldUserId == "") && (newUserId != null || newUserId != ""))
             {
                 //This condition needs to trigger an Assignment Notification record
                 notification.UserId = newUserId;
@@ -48,7 +48,7 @@ namespace LPBugTracker.Helpers
                 db.SaveChanges();
             }
 
-            else if (oldUserId != null && newUserId == null)
+            else if ((oldUserId != null || oldUserId != "") && (newUserId == null || newUserId == ""))
             {
                 notification.UserId = oldUserId;
                 notification.Message = $"You have been unassigned from Ticket {newTicket.Id}";
@@ -191,6 +191,39 @@ namespace LPBugTracker.Helpers
             Unassigned,
             Reassigned,
             Assigned,
+        }
+        
+        public void commentNotify(TicketComment comment)
+        {
+            if (comment.UserId != comment.Ticket.AssignedUserId)
+            {
+                var notification = new TicketNotification
+                {
+                    Created = DateTime.Now,
+                    Message = db.Users.Find(comment.UserId).FullName + " left a comment on ticket: " + comment.Ticket.Title,
+                    UserId = comment.Ticket.AssignedUserId,
+                    TicketId = comment.TicketId
+                };
+                db.Notifications.Add(notification);
+                db.SaveChanges();
+            }
+            
+        }
+        public void attachmentNotify(TicketComment comment)
+        {
+            if (comment.UserId != comment.Ticket.AssignedUserId)
+            {
+                var notification = new TicketNotification
+                {
+                    Created = DateTime.Now,
+                    Message = db.Users.Find(comment.UserId).FullName + " added an attachment on ticket: " + comment.Ticket.Title,
+                    UserId = comment.Ticket.AssignedUserId,
+                    TicketId = comment.TicketId
+                };
+                db.Notifications.Add(notification);
+                db.SaveChanges();
+            }
+
         }
     }
 }

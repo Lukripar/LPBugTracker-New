@@ -204,59 +204,29 @@
                                 </ul>
                             </li>
                             <li role="presentation" class="dropdown">
+                                @{ var userNotifications = db.Notifications.Where(n => n.UserId == user.Id && !n.Read); }
                                 <a href="javascript:;" class="dropdown-toggle info-number" data-toggle="dropdown" aria-expanded="false">
                                     <i class="fa fa-envelope-o"></i>
-                                    <span class="badge bg-green">6</span>
+                                    <span class="badge bg-green">@if (userNotifications.Count() > 0) { <span>@userNotifications.Count()</span> }</span>
                                 </a>
+
                                 <ul id="menu1" class="dropdown-menu list-unstyled msg_list" role="menu">
-                                    <li>
-                                        <a>
-                                            <span class="image"><img src="images/img.jpg" alt="Profile Image" /></span>
-                                            <span>
-                                                <span>John Smith</span>
-                                                <span class="time">3 mins ago</span>
-                                            </span>
-                                            <span class="message">
-                                                Film festivals used to be do-or-die moments for movie makers. They were where...
-                                            </span>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a>
-                                            <span class="image"><img src="images/img.jpg" alt="Profile Image" /></span>
-                                            <span>
-                                                <span>John Smith</span>
-                                                <span class="time">3 mins ago</span>
-                                            </span>
-                                            <span class="message">
-                                                Film festivals used to be do-or-die moments for movie makers. They were where...
-                                            </span>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a>
-                                            <span class="image"><img src="images/img.jpg" alt="Profile Image" /></span>
-                                            <span>
-                                                <span>John Smith</span>
-                                                <span class="time">3 mins ago</span>
-                                            </span>
-                                            <span class="message">
-                                                Film festivals used to be do-or-die moments for movie makers. They were where...
-                                            </span>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a>
-                                            <span class="image"><img src="images/img.jpg" alt="Profile Image" /></span>
-                                            <span>
-                                                <span>John Smith</span>
-                                                <span class="time">3 mins ago</span>
-                                            </span>
-                                            <span class="message">
-                                                Film festivals used to be do-or-die moments for movie makers. They were where...
-                                            </span>
-                                        </a>
-                                    </li>
+                                    @foreach (var notification in userNotifications.OrderByDescending(n => n.Created).Take(10))
+                                    {
+                                        <li>
+                                            <a>
+                                                <span class="image"><i class="fa fa-envelope-o"></i></span>
+                                                <span>
+                                                    <span>@StringHelper.TruncString(notification.Ticket.Title, 17)</span>
+                                                    <span class="time">@notification.Created.ToString("MM/dd/yyyy") at @notification.Created.ToString("h:mm tt")</span>
+                                                </span>
+                                                <span class="message">
+                                                    @Html.Raw(notification.Message)
+                                                </span>
+                                            </a>
+                                        </li>
+                                    }
+
                                     <li>
                                         <div class="text-center">
                                             <a>

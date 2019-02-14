@@ -133,6 +133,7 @@ namespace LPBugTracker.Helpers
                 var oldTicket = db.Tickets.AsNoTracking().FirstOrDefault(t => t.Id == ticketId);
                 var ticket = db.Tickets.Find(ticketId);
                 ticket.AssignedUserId = userId;
+                db.Entry(ticket).Property(t => t.AssignedUserId).IsModified = true;
                 ChangeTicketStatus(ticketId, "Open");
                 if (!HttpContext.Current.User.IsInRole("Demo"))
                 {

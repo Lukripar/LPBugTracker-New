@@ -24,7 +24,7 @@ namespace LPBugTracker.Helpers
                 case "TypeId":
                     name = db.Types.Find(Convert.ToInt32(id)).Name;
                     break;
-                case "AssignedToUserId":
+                case "AssignedUserId":
                     name = db.Users.Find(id).FullName;
                     break;
             }

@@ -19,6 +19,7 @@ namespace LPBugTracker.Controllers
         private TicketHelper ticketHelper = new TicketHelper();
         private UserRolesHelper roleHelper = new UserRolesHelper();
         private ProjectHelper projHelper = new ProjectHelper();
+        private NotificationHelper notifyHelper = new NotificationHelper();
         // GET: TicketComments
         public ActionResult Index()
         {
@@ -75,6 +76,7 @@ namespace LPBugTracker.Controllers
 
             db.Comments.Add(newComment);
             db.SaveChanges();
+            notifyHelper.commentNotify(newComment);
             return RedirectToAction("Details", "Tickets", new { id = TicketId });
         }
 

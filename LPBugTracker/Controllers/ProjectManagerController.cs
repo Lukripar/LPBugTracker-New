@@ -17,6 +17,8 @@ namespace LPBugTracker.Controllers
         private UserRolesHelper roleHelper = new UserRolesHelper();
         private ProjectHelper projHelper = new ProjectHelper();
         private TicketHelper ticketHelper = new TicketHelper();
+        private NotificationHelper notifyHelper = new NotificationHelper();
+        private HistoryHelper historyHelper = new HistoryHelper();
 
         // GET: ProjectManager
         public ActionResult Index()
@@ -82,6 +84,57 @@ namespace LPBugTracker.Controllers
             return RedirectToAction("Index", "ProjectManager");
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> AssignTicketFromIndex(int ticketId, string newDeveloper)
+        {
+
+            await ticketHelper.AssignUserToTicket(newDeveloper, ticketId);
+            TempData["Message"] = "Ticket Assigned.";
+            if (User.IsInRole("Admin"))
+            {
+                return RedirectToAction("Dashboard", "Admin");
+            }
+            return RedirectToAction("UnassignedTickets", "ProjectManager");
+        }
+
+        public ActionResult EditTicketDev(int ticketId)
+        {
+            var ticket = db.Tickets.Find(ticketId);
+            var devs = projHelper.GetProjectUsersInRole("Developer", ticket.ProjectId);
+            var currentDev = ticket.AssignedUserId;
+            ViewBag.Developers = new SelectList(devs, "Id", "FullName", currentDev);
+
+            return View(ticket);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> EditTicketDev(int ticketId, string Developers)
+        {
+            var oldTicket = db.Tickets.AsNoTracking().FirstOrDefault(t => t.Id == ticketId);
+            var ticket = db.Tickets.Find(ticketId);
+
+            if (Developers == "")
+            {
+                await ticketHelper.UnassignUserFromTicket(ticketId, ticket.AssignedUserId);
+                TempData["TicketMessage"] = "Unassigned Ticket Successfully.";
+                return RedirectToAction("Details", "Tickets", new { id = ticketId });
+            }
+            
+            ticket.AssignedUserId = Developers;
+            db.Entry(ticket).Property(t => t.AssignedUserId).IsModified = true;
+
+            if (!User.IsInRole("Demo"))
+            {
+                db.SaveChanges();
+                await notifyHelper.Notify(oldTicket, ticket);
+                historyHelper.AddHistories(oldTicket, ticket);
+            }
+            TempData["TicketMessage"] = "Assigned Dev Changed Successfully.";
+            return RedirectToAction("Details", "Tickets", new { id = ticketId });
+        }
+
 
         public ActionResult Edit (int projectId)
         {
@@ -116,15 +169,46 @@ namespace LPBugTracker.Controllers
                 {
                     //remove devs from project
                     var AssignedDevs = projHelper.GetProjectUsersInRole("Developer", project.Id);
+                    var unchangedUsers = new List<ApplicationUser>();
+                    var newUsers = new List<ApplicationUser>();
+                    var oldUsers = new List<ApplicationUser>();
+                    //make a list of users that aren't changing.
                     foreach (var user in AssignedDevs)
                     {
-                        await projHelper.RemoveUserFromProject(user.Id, project.Id);
+                        foreach(var dev in Developers)
+                        {
+                            if (user.Id == dev)
+                            {
+                                unchangedUsers.Add(user);
+                            }
+                        }
+                    }
+                    //make a list of users that are being removed.
+                    foreach (var dev in AssignedDevs)
+                    {
+                        if (!unchangedUsers.Contains(dev))
+                        {
+                            oldUsers.Add(dev);
+                        }
+                    }
+                    //remove those devs.
+                    foreach(var dev in oldUsers)
+                    {
+                        await projHelper.RemoveUserFromProject(dev.Id, project.Id);
+                    }
+                    //make a list of users that are new
+                    foreach (var dev in Developers)
+                    {
+                        var devUser = db.Users.Find(dev);
+                        if (!unchangedUsers.Contains(devUser))
+                        {
+                            newUsers.Add(db.Users.Find(dev));
+                        }
                     }
 
-                    //add them back on.
-                    foreach (var user in Developers)
+                    foreach (var user in newUsers)
                     {
-                        projHelper.AddUserToProject(user, project.Id);
+                        projHelper.AddUserToProject(user.Id, project.Id);
                     }
                     TempData["Message"] = "Successfully changed the Assigned Developers";
                     if (User.IsInRole("Admin"))
