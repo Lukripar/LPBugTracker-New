@@ -3,6 +3,7 @@ using LPBugTracker.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 
@@ -83,13 +84,13 @@ namespace LPBugTracker.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult UpdateUsers(string ProjectManagers, List<string> Developers, List<string> Submitters, int projectId)
+        public async Task<ActionResult> UpdateUsers(string ProjectManagers, List<string> Developers, List<string> Submitters, int projectId)
         {
             var project = db.Projects.Find(projectId);
 
             foreach (var user in project.Users)
             {
-                projHelper.RemoveUserFromProject(user.Id, projectId);
+                await projHelper.RemoveUserFromProject(user.Id, projectId);
             }
             projHelper.AddUserToProject(ProjectManagers, projectId);
             foreach (var user in Developers)

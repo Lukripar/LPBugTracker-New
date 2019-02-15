@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Net;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 
@@ -82,14 +83,14 @@ namespace LPBugTracker.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,Name,Description")] Project project, string Submitter, string ProjectManager, List<string> Developers)
+        public async Task<ActionResult> Edit([Bind(Include = "Id,Name,Description")] Project project, string Submitter, string ProjectManager, List<string> Developers)
         {
             if (ModelState.IsValid)
             {
                 //Remove Everyone from the Project and add back the chosen ones
                 foreach (var user in projHelper.UsersOnProject(project.Id).ToList())
                 {
-                    projHelper.RemoveUserFromProject(user.Id, project.Id);
+                    await projHelper.RemoveUserFromProject(user.Id, project.Id);
                 }
 
                 //add back the PM
