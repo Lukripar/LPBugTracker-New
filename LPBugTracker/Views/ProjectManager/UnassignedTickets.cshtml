@@ -2,12 +2,21 @@
     
 @using LPBugTracker.Models
 @using LPBugTracker.Helpers
+@using Microsoft.AspNet.Identity
 @{
     ViewBag.Title = "Unassigned Tickets";
 
     ApplicationDbContext db = new ApplicationDbContext();
     ProjectHelper projHelper = new ProjectHelper();
     UserRolesHelper roleHelper = new UserRolesHelper();
+
+    var demoAdminId = "26222e84-ebd1-4b2c-97cd-875773afd07f";
+    var userId = HttpContext.Current.User.Identity.GetUserId();
+    var ticketList = Model;
+    if(userId == demoAdminId)
+    {
+        ticketList = Model.Where(t => t.ProjectId >= 14);
+    }
 }
 
 
@@ -59,7 +68,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach (var ticket in Model)
+                                @foreach (var ticket in ticketList)
                                 {
                                     <tr>
                                         <td>@ticket.Title</td>

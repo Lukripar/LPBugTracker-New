@@ -47,7 +47,8 @@ namespace LPBugTracker.Controllers
             db.Entry(notification).Property(n => n.Read).IsModified = true;
             db.SaveChanges();
             var returnUrl = Request.ServerVariables["http_referer"];
-            return Redirect(returnUrl);
+            //return Redirect(returnUrl);
+            return RedirectToAction("Details", "Tickets", new { id = notification.TicketId });
         }
     }
 }

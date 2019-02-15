@@ -6,8 +6,16 @@
 
     var roleHelper = new UserRolesHelper();
 
-}
+    var userId = HttpContext.Current.User.Identity.GetUserId();
+    var demoAdminId = "26222e84-ebd1-4b2c-97cd-875773afd07f";
+    var userList = Model;
 
+    if (userId == demoAdminId)
+    {
+        userList = Model.Where(u => u.Email.Contains("SolutionCenterDemo"));
+    }
+
+}
 
 <div class="right_col" role="main">
     <div class="">
@@ -32,11 +40,10 @@
             {
                 <p>@TempData["Message"]</p>
             }
-            @{ var userId = HttpContext.Current.User.Identity.GetUserId(); }
-            @if (roleHelper.IsUserInRole(userId, "Admin"))
+            @*@if (roleHelper.IsUserInRole(userId, "Admin"))
             {
                 @Html.ActionLink("Fix null Profile Pictures", "FixProfilePictures", "Admin", null, new { @class = "btn btn-primary " })
-            }
+            }*@
         </div>
         <div class="clearfix"></div>
         <div class="row">
@@ -94,7 +101,7 @@
                                     <th></th>
                                 </tr>
 
-                                @foreach (var item in Model)
+                                @foreach (var item in userList)
                                 {
                                     <tr>
                                         <td>

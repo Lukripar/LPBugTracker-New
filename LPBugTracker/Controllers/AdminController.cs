@@ -58,8 +58,16 @@ namespace LPBugTracker.Controllers
             ViewBag.Developers = new MultiSelectList(devs, "Id", "FullName", assignedDevIds);
 
             var pms = roleHelper.UsersInRole("Project Manager");
-            var assignedPM = projHelper.GetProjectUsersInRole("Project Manager", projectId).FirstOrDefault().Id;
-            ViewBag.ProjectManagers = new SelectList(pms, "Id", "FullName", assignedPM);
+            var assignedPM = projHelper.GetProjectUsersInRole("Project Manager", projectId).FirstOrDefault();
+            if (assignedPM == null)
+            {
+                ViewBag.ProjectManagers = new SelectList(pms, "Id", "FullName");
+            }
+            else
+            {
+                ViewBag.ProjectManagers = new SelectList(pms, "Id", "FullName", assignedPM.Id);
+            }
+            
 
             var subs = roleHelper.UsersInRole("Submitter");
             var assignedSubs = projHelper.GetProjectUsersInRole("Submitter", projectId);

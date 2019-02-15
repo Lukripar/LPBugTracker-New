@@ -1,6 +1,7 @@
 ﻿@model IEnumerable<LPBugTracker.Models.Project>
 @using LPBugTracker.Helpers
 @using LPBugTracker.Models
+@using Microsoft.AspNet.Identity
 @{
     ViewBag.Title = "Index";
     var ticketHelper = new TicketHelper();
@@ -8,6 +9,8 @@
     var projHelper = new ProjectHelper();
     ApplicationDbContext db = new ApplicationDbContext();
     var count = 1;
+    var demoAdminId = "26222e84-ebd1-4b2c-97cd-875773afd07f";
+    var projectList = Model;
 }
 
 <!-- page content -->
@@ -36,7 +39,13 @@
         </div>
 
         <div class="clearfix"></div>
-        @foreach (var project in Model)
+        @if(HttpContext.Current.User.Identity.GetUserId() == demoAdminId)
+        {
+            //Demo user only sees projects we have created for them to see and every new project from then on. (Assuming demo users are creating projects).
+            projectList = Model.Where(p => p.Id >= 14);
+        }
+
+        @foreach (var project in projectList)
         {
 
             <div class="row">

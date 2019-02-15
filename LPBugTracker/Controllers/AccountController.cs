@@ -11,6 +11,7 @@ using Microsoft.Owin.Security;
 using LPBugTracker.Models;
 using System.Net.Mail;
 using LPBugTracker.Helpers;
+using System.Web.Configuration;
 
 namespace LPBugTracker.Controllers
 {
@@ -70,7 +71,7 @@ namespace LPBugTracker.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [AllowAnonymous]
-        public async Task<ActionResult> Login(LoginOrRegisterViewModel model, string returnUrl)
+        public async Task<ActionResult> Login(LoginOrRegisterViewModel model, string returnUrl, string role)
         {
             if (!ModelState.IsValid)
             {
@@ -79,47 +80,96 @@ namespace LPBugTracker.Controllers
 
             // This doesn't count login failures towards account lockout
             // To enable password failures to trigger account lockout, change to shouldLockout: true
-            var result = await SignInManager.PasswordSignInAsync(model.Login.Email, model.Login.Password, model.Login.RememberMe, shouldLockout: false);
-            switch (result)
+            if (string.IsNullOrEmpty(role))
             {
-                case SignInStatus.Success:
-                    if(string.IsNullOrEmpty(returnUrl))
-                    {
-                        var userId = db.Users.FirstOrDefault(u => u.Email.ToLower() == model.Login.Email.ToLower()).Id;
-                        if (roleHelper.IsUserInRole(userId, "Admin"))
+                var result = await SignInManager.PasswordSignInAsync(model.Login.Email, model.Login.Password, model.Login.RememberMe, shouldLockout: false);
+                switch (result)
+                {
+                    case SignInStatus.Success:
+                        if (string.IsNullOrEmpty(returnUrl))
                         {
-                            return RedirectToAction("Dashboard", "Admin");
-                        }
-                        else if (roleHelper.IsUserInRole(userId, "Project Manager"))
-                        {
-                            return RedirectToAction("Index", "ProjectManager");
-                        }
-                        //insert conditions for when a dev or sub signin
-                        else if(roleHelper.IsUserInRole(userId, "Submitter"))
-                        {
-                            return RedirectToAction("Index", "Submitter");
-                        }
-                        else if(roleHelper.IsUserInRole(userId, "Developer"))
-                        {
-                            return RedirectToAction("Index", "Developer");
-                        }
-                        else
-                        {
-                            return RedirectToAction("Index", "Profile");
-                        }
+                            var userId = db.Users.FirstOrDefault(u => u.Email.ToLower() == model.Login.Email.ToLower()).Id;
+                            if (roleHelper.IsUserInRole(userId, "Admin"))
+                            {
+                                return RedirectToAction("Dashboard", "Admin");
+                            }
+                            else if (roleHelper.IsUserInRole(userId, "Project Manager"))
+                            {
+                                return RedirectToAction("Index", "ProjectManager");
+                            }
+                            //insert conditions for when a dev or sub signin
+                            else if (roleHelper.IsUserInRole(userId, "Submitter"))
+                            {
+                                return RedirectToAction("Index", "Submitter");
+                            }
+                            else if (roleHelper.IsUserInRole(userId, "Developer"))
+                            {
+                                return RedirectToAction("Index", "Developer");
+                            }
+                            else
+                            {
+                                return RedirectToAction("Index", "Profile");
+                            }
 
-                        
-                    }
-                    return RedirectToLocal(returnUrl);
-                case SignInStatus.LockedOut:
-                    return View("Lockout"); 
-                case SignInStatus.RequiresVerification:
-                    return RedirectToAction("SendCode", new { ReturnUrl = returnUrl, RememberMe = model.Login.RememberMe });
-                case SignInStatus.Failure:
-                default:
-                    ModelState.AddModelError("", "Invalid login attempt.");
-                    return RedirectToAction("Index", "Home");
+
+                        }
+                        return RedirectToLocal(returnUrl);
+                    case SignInStatus.LockedOut:
+                        return View("Lockout");
+                    case SignInStatus.RequiresVerification:
+                        return RedirectToAction("SendCode", new { ReturnUrl = returnUrl, RememberMe = model.Login.RememberMe });
+                    case SignInStatus.Failure:
+                    default:
+                        ModelState.AddModelError("", "Invalid login attempt.");
+                        return RedirectToAction("Index", "Home");
+                }
             }
+            else
+            {
+                var result = await SignInManager.PasswordSignInAsync(role, WebConfigurationManager.AppSettings["demoPassword"], false, false);
+
+                switch (result)
+                {
+                    case SignInStatus.Success:
+                        if (string.IsNullOrEmpty(returnUrl))
+                        {
+                            var userId = db.Users.FirstOrDefault(u => u.Email.ToLower() == role.ToLower()).Id;
+                            if (roleHelper.IsUserInRole(userId, "Admin"))
+                            {
+                                return RedirectToAction("Dashboard", "Admin");
+                            }
+                            else if (roleHelper.IsUserInRole(userId, "Project Manager"))
+                            {
+                                return RedirectToAction("Index", "ProjectManager");
+                            }
+                            //insert conditions for when a dev or sub signin
+                            else if (roleHelper.IsUserInRole(userId, "Submitter"))
+                            {
+                                return RedirectToAction("Index", "Submitter");
+                            }
+                            else if (roleHelper.IsUserInRole(userId, "Developer"))
+                            {
+                                return RedirectToAction("Index", "Developer");
+                            }
+                            else
+                            {
+                                return RedirectToAction("Index", "Profile");
+                            }
+
+
+                        }
+                        return RedirectToLocal(returnUrl);
+                    case SignInStatus.LockedOut:
+                        return View("Lockout");
+                    case SignInStatus.RequiresVerification:
+                        return RedirectToAction("SendCode", new { ReturnUrl = returnUrl, RememberMe = model.Login.RememberMe });
+                    case SignInStatus.Failure:
+                    default:
+                        ModelState.AddModelError("", "Invalid login attempt.");
+                        return RedirectToAction("Index", "Home");
+                }
+            }
+            
         }
 
         //

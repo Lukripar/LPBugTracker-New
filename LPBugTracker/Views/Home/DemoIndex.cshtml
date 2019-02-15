@@ -1,0 +1,208 @@
+﻿@using LPBugTracker.Models
+@model LoginOrRegisterViewModel
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <!-- Meta, title, CSS, favicons, etc. -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Solution Center - Login</title>
+    <link rel="icon" type="image/x-icon" href="~/img/fav.jpg" />
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/Content/font-awesome.min.css" rel="stylesheet" />
+    <link href="~/Content/nprogress.css" rel="stylesheet" />
+    <link href="~/Content/custom.min.css" rel="stylesheet" />
+    <!-- Bootstrap -->
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+    <!-- Font Awesome -->
+    <link href="~/Content/font-awesome.min.css" rel="stylesheet" />
+    <!-- NProgress -->
+    <link href="~/Content/nprogress.css" rel="stylesheet" />
+    <!-- Animate.css -->
+    <link href="~/Content/animate.min.css" rel="stylesheet" />
+</head>
+<body class="login">
+    <div class="col-md-8 col-md-offset-2">
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <div class="row">
+            <div class="col-md-12 text-center">
+                <h1><i class="fa fa-check-square-o"></i> Solution Center</h1>
+                <br />
+                <h3>Choose a Role you would like to Demo the Application with:</h3>
+                <small><a href="@Url.Action("Index","Home")">or Login Normally</a></small>
+            </div>
+        </div>
+        <br />
+        <br />
+        <br />
+        <div class="row">
+
+
+
+                <div class="col-md-3 col-xs-12 widget widget_tally_box">
+                    <div class="x_panel ui-ribbon-container fixed_height_390">
+                        <div class="ui-ribbon-wrapper">
+                            <div class="ui-ribbon">
+                                Demo
+                            </div>
+                        </div>
+                        <div class="x_title">
+                            <h2>Admin</h2>
+                            <div class="clearfix"></div>
+                        </div>
+                        <div class="x_content">
+
+
+                            <div class="row">
+                                <h3 class="name_title">Full Access</h3>
+                                @*<p>Short Description</p>*@
+
+                                <div class="divider"></div>
+
+                                <p>The Admin can interact with any Project or Ticket and assign users as they see fit.</p>
+                            </div>
+                            <br />
+                            <br />
+                            <br />
+                            <br />
+                            <br />
+                            <hr />
+                            <div class="row text-center">
+                                @using (Html.BeginForm("Login", "Account", FormMethod.Post))
+                                {
+                                    @Html.AntiForgeryToken()
+                                    @Html.Hidden("role", "SolutionCenterDemoAdmin@mailinator.com")
+                                    <button class="btn btn-primary" type="submit">Select Admin</button>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="col-md-3 col-xs-12 widget widget_tally_box">
+                    <div class="x_panel ui-ribbon-container fixed_height_390">
+                        <div class="ui-ribbon-wrapper">
+                            <div class="ui-ribbon">
+                                Demo
+                            </div>
+                        </div>
+                        <div class="x_title">
+                            <h2>Manager</h2>
+                            <div class="clearfix"></div>
+                        </div>
+                        <div class="x_content">
+
+
+                            <div class="row">
+                                <h3 class="name_title">Manages Projects</h3>
+
+                                <div class="divider"></div>
+
+                                <p>The Project Manager can interact with tickets on projects they are assigned to. They are also in control of assigning developers to projects and tickets.</p>
+                            </div>
+                            <br />
+                            <br />
+                            <br />
+                            <hr />
+                            <div class="row text-center">
+                                @using (Html.BeginForm("Login", "Account", FormMethod.Post))
+                                {
+                                    @Html.AntiForgeryToken()
+                                    @Html.Hidden("role", "SolutionCenterDemoPM@mailinator.com")
+                                    <button class="btn btn-primary" type="submit">Select Manager</button>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+
+                <div class="col-md-3 col-xs-12 widget widget_tally_box">
+                    <div class="x_panel ui-ribbon-container fixed_height_390">
+                        <div class="ui-ribbon-wrapper">
+                            <div class="ui-ribbon">
+                                Demo
+                            </div>
+                        </div>
+                        <div class="x_title">
+                            <h2>Developer</h2>
+                            <div class="clearfix"></div>
+                        </div>
+                        <div class="x_content">
+
+
+                            <div class="row">
+                                <h3 class="name_title">Problem Solver</h3>
+
+                                <div class="divider"></div>
+
+                                <p>Developers are responsible for working on tickets, so they can view a list of Projects they are assigned to, and they can edit tickets they are assigned to.</p>
+                            </div>
+                            <br />
+                            <br />
+                            <br />
+                            <hr />
+                            <div class="row text-center">
+                                @using (Html.BeginForm("Login", "Account", FormMethod.Post))
+                                {
+                                    @Html.AntiForgeryToken()
+                                    @Html.Hidden("role", "SolutionCenterDemoDev@mailinator.com")
+                                    <button class="btn btn-primary" type="submit">Select Developer</button>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="col-md-3 col-xs-12 widget widget_tally_box">
+                    <div class="x_panel ui-ribbon-container fixed_height_390">
+                        <div class="ui-ribbon-wrapper">
+                            <div class="ui-ribbon">
+                                Demo
+                            </div>
+                        </div>
+                        <div class="x_title">
+                            <h2>Submitter</h2>
+                            <div class="clearfix"></div>
+                        </div>
+                        <div class="x_content">
+                            <div class="row">
+                                <h3 class="name_title">Submits Tickets</h3>
+
+                                <div class="divider"></div>
+
+                                <p>Submitters take the role of the "client" and their job is to submit tickets for projects they are assigned to, in hopes that the issue will be resolved by a developer.</p>
+                            </div>
+                            <br />
+                            <br />
+                            <br />
+                            <hr />
+                            <div class="row text-center">
+                                @using (Html.BeginForm("Login", "Account", FormMethod.Post))
+                                {
+                                    @Html.AntiForgeryToken()
+                                    @Html.Hidden("role", "SolutionCenterDemoSub@mailinator.com")
+                                    <button class="btn btn-primary" type="submit">Select Submitter</button>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+        </div>
+    </div>
+</body>
+</html>
