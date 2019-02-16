@@ -1,5 +1,6 @@
 ﻿using LPBugTracker.Helpers;
 using LPBugTracker.Models;
+using Microsoft.AspNet.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,6 +16,7 @@ namespace LPBugTracker.Controllers
         private ApplicationDbContext db = new ApplicationDbContext();
         private UserRolesHelper roleHelper = new UserRolesHelper();
         private ProjectHelper projHelper = new ProjectHelper();
+        string demoAdminId = "26222e84-ebd1-4b2c-97cd-875773afd07f";
         public ActionResult Index()
         {
             return View();
@@ -181,6 +183,31 @@ namespace LPBugTracker.Controllers
             }
 
             return View(project);
+        }
+
+        public ActionResult ManageRoles()
+        {
+            var users = db.Users.ToList();
+            if (User.Identity.GetUserId() == demoAdminId)
+            {
+                users = db.Users.Where(u => u.Email.Contains("SolutionCenterDemo")).ToList();
+            }
+            
+
+            return View(users);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult ManageRoles(string userId, string roleName)
+        {
+            var user = db.Users.Find(userId);
+            var currentRole = roleHelper.ListUserRoles(userId).FirstOrDefault();
+            roleHelper.RemoveUserFromRole(userId, currentRole);
+            roleHelper.AddUserToRole(userId, roleName);
+
+            TempData["roleMessage"] = user.FullName + "'s role has been updated to " + roleName + ".";
+            return RedirectToAction("ManageRoles");
         }
     }
 }

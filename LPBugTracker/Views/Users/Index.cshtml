@@ -77,70 +77,72 @@
                                 @Html.ActionLink("Create New", "Create", null, new { @class = "btn btn-primary" })
                             </p>*@
                         <div class="row">
-                            <table class="table">
-                                <tr>
-                                    <th>
-                                        @Html.DisplayNameFor(model => model.FirstName)
-                                    </th>
-                                    <th>
-                                        @Html.DisplayNameFor(model => model.LastName)
-                                    </th>
-                                    <th>
-                                        @Html.DisplayNameFor(model => model.DisplayName)
-                                    </th>
-
-                                    <th>
-                                        @Html.DisplayNameFor(model => model.Email)
-                                    </th>
-                                    <th>
-                                        @Html.DisplayNameFor(model => model.PhoneNumber)
-                                    </th>
-                                    <th>
-                                        @Html.DisplayName("Role(s)")
-                                    </th>
-                                    <th></th>
-                                </tr>
-
-                                @foreach (var item in userList)
-                                {
+                            <table class="table jq-data">
+                                <thead>
                                     <tr>
-                                        <td>
-                                            @Html.DisplayFor(modelItem => item.FirstName)
-                                        </td>
-                                        <td>
-                                            @Html.DisplayFor(modelItem => item.LastName)
-                                        </td>
-                                        <td>
-                                            @Html.DisplayFor(modelItem => item.DisplayName)
-                                        </td>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.FirstName)
+                                        </th>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.LastName)
+                                        </th>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.DisplayName)
+                                        </th>
 
-                                        <td>
-                                            @Html.DisplayFor(modelItem => item.Email)
-                                        </td>
-
-                                        <td>
-                                            @Html.DisplayFor(modelItem => item.PhoneNumber)
-                                        </td>
-                                        <td>
-                                            @{
-                                                var role = roleHelper.ListUserRoles(item.Id);
-                                            }
-                                            @role.FirstOrDefault()
-                                        </td>
-                                        <td>
-                                            @if (User.IsInRole("Admin"))
-                                            {
-                                                @Html.ActionLink("Edit", "Edit", new { id = item.Id })<span> |</span>
-
-                                            }
-
-
-                                            @Html.ActionLink("Details", "Details", new { id = item.Id }) |
-                                            @Html.ActionLink("Delete", "Delete", new { id = item.Id })
-                                        </td>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.Email)
+                                        </th>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.PhoneNumber)
+                                        </th>
+                                        <th>
+                                            @Html.DisplayName("Role(s)")
+                                        </th>
+                                        <th></th>
                                     </tr>
-                                }
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in userList)
+                                    {
+                                        <tr>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.FirstName)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.LastName)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.DisplayName)
+                                            </td>
 
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.Email)
+                                            </td>
+
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.PhoneNumber)
+                                            </td>
+                                            <td>
+                                                @{
+                                                    var role = roleHelper.ListUserRoles(item.Id);
+                                                }
+                                                @role.FirstOrDefault()
+                                            </td>
+                                            <td>
+                                                @if (User.IsInRole("Admin"))
+                                                {
+                                                    @Html.ActionLink("Edit", "Edit", new { id = item.Id })<span> |</span>
+
+                                                }
+
+
+                                                @Html.ActionLink("Details", "Details", new { id = item.Id }) |
+                                                @Html.ActionLink("Delete", "Delete", new { id = item.Id })
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
                             </table>
                         </div>
 

@@ -563,6 +563,7 @@
     <Content Include="Views\Users\Index.cshtml" />
     <Content Include="Views\ProjectManager\EditTicketDev.cshtml" />
     <Content Include="Views\Home\DemoIndex.cshtml" />
+    <Content Include="Views\Admin\ManageRoles.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

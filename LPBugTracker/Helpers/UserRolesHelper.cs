@@ -31,8 +31,12 @@ namespace LPBugTracker.Helpers
 
         public bool RemoveUserFromRole(string userId, string roleName)
         {
-            var result = userManager.RemoveFromRole(userId, roleName);
-            return result.Succeeded;
+            if(roleName != null)
+            {
+                var result = userManager.RemoveFromRole(userId, roleName);
+                return result.Succeeded;
+            }
+            return true;
         }
 
         public ICollection<ApplicationUser> UsersInRole(string roleName)
