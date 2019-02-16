@@ -42,6 +42,7 @@ namespace LPBugTracker.Controllers
                 ProjectId = projectId
             };
             ViewBag.PriorityId = new SelectList(db.Priorities, "Id", "Name", defaultPriority.Id);
+            ViewBag.TypeId = new SelectList(db.Types, "Id", "Name");
             ViewBag.ProjectName = project.Name;
             return View(newTicket);
         }
@@ -53,6 +54,7 @@ namespace LPBugTracker.Controllers
         {
             if (ModelState.IsValid)
             {
+                
                 ticket.OwnerUserId = User.Identity.GetUserId();
                 ticket.Created = DateTime.Now;
 

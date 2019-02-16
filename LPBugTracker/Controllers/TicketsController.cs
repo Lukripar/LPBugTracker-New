@@ -18,6 +18,7 @@ namespace LPBugTracker.Controllers
         private UserRolesHelper roleHelper = new UserRolesHelper();
         private NotificationHelper notifyHelper = new NotificationHelper();
         private HistoryHelper historyHelper = new HistoryHelper();
+        private ProjectHelper projHelper = new ProjectHelper();
 
         // GET: Tickets
         public ActionResult Index()
@@ -43,7 +44,7 @@ namespace LPBugTracker.Controllers
             var project = ticket.Project;
             var pms = roleHelper.UsersInRole("Project Manager");
             var assignedPM = "";
-            foreach (var user in pms)
+            foreach (var user in ticket.Project.Users)
             {
                 if (roleHelper.IsUserInRole(user.Id, "Project Manager"))
                 {
