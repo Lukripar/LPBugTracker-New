@@ -38,6 +38,8 @@
     <!-- bootstrap-daterangepicker -->
     <link href="~/Content/daterangepicker.css" rel="stylesheet" />
 
+    <link href="~/Content/PagedList.css" rel="stylesheet" type="text/css">
+
 
     <!-- Jquery Datatables -->
     @*<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.10.18/datatables.min.css" />*@
@@ -53,7 +55,7 @@
 <body class="nav-md">
     <div class="container body">
         <div class="main_container">
-            <div class="col-md-3 left_col">
+            <div class="col-md-3 left_col menu_fixed">
                 <div class="left_col scroll-view">
                     <div class="navbar nav_title" style="border: 0;">
                         @if (User.IsInRole("Admin"))

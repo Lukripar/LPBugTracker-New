@@ -1,7 +1,9 @@
-﻿@model IEnumerable<LPBugTracker.Models.Project>
+﻿@model IPagedList<LPBugTracker.Models.Project>
 @using LPBugTracker.Helpers
 @using LPBugTracker.Models
 @using Microsoft.AspNet.Identity
+@using PagedList;
+@using PagedList.Mvc;
 @{
     ViewBag.Title = "Index";
     var ticketHelper = new TicketHelper();
@@ -10,7 +12,7 @@
     ApplicationDbContext db = new ApplicationDbContext();
     var count = 1;
     var demoAdminId = "26222e84-ebd1-4b2c-97cd-875773afd07f";
-    var projectList = Model;
+    var projectList = Model.ToList();
 }
 
 <!-- page content -->
@@ -27,12 +29,16 @@
 
             <div class="title_right">
                 <div class="col-md-5 col-sm-5 col-xs-12 form-group pull-right top_search">
-                    <div class="input-group">
-                        <input type="text" class="form-control" placeholder="Search for...">
-                        <span class="input-group-btn">
-                            <button class="btn btn-default" type="button">Go!</button>
-                        </span>
-                    </div>
+                    @using (Html.BeginForm("Dashboard", "Admin", FormMethod.Get, htmlAttributes: new { @class = "form" }))
+                    {
+                        
+                        <div class="input-group">
+                            <input type="text" id="searchStr" name="searchStr" class="form-control" placeholder="Search for...">
+                            <span class="input-group-btn">
+                                <button class="btn btn-default" id="searchStr" name="searchStr" type="submit">Go!</button>
+                            </span>
+                        </div>
+                    }
                     @Html.ActionLink("New Project...", "CreateProject", "Admin", null, new { @class = "btn btn-primary btn-sm pull-right" })
                 </div>
             </div>
@@ -42,7 +48,7 @@
         @if(HttpContext.Current.User.Identity.GetUserId() == demoAdminId)
         {
             //Demo user only sees projects we have created for them to see and every new project from then on. (Assuming demo users are creating projects).
-            projectList = Model.Where(p => p.Id >= 14);
+            projectList = Model.Where(p => p.Id >= 14).ToList();
         }
 
         @foreach (var project in projectList)
@@ -421,6 +427,10 @@
             count++;
         }
 
+        <div class="row text-center">
+            Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+            @Html.PagedListPager(Model, page => Url.Action("Dashboard", new { page, searchStr=ViewBag.Searchs }))
+        </div>
     </div>
 </div>
 <!-- /page content -->

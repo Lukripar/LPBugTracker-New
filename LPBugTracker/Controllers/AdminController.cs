@@ -7,6 +7,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using PagedList;
+using PagedList.Mvc;
 
 namespace LPBugTracker.Controllers
 {
@@ -41,10 +43,37 @@ namespace LPBugTracker.Controllers
             return RedirectToAction("Index", "Home");
         }
 
-        public ActionResult Dashboard()
+        public ActionResult Dashboard(int? page, string searchStr)
         {
-            var projects = db.Projects;
-            return View(projects);
+            ViewBag.Search = searchStr;
+            var projList = IndexSearch(searchStr);
+
+            int pageSize = 5;
+            int pageNumber = (page ?? 1);
+            var projects = db.Projects.OrderByDescending(p => p.Name).ToPagedList(pageNumber, pageSize);
+            return View(projList.ToPagedList(pageNumber,pageSize));
+        }
+
+        public IQueryable<Project> IndexSearch(string searchStr)
+        {
+            IQueryable<Project> result = null;
+            if (searchStr != null)
+            {
+                result = db.Projects.AsQueryable();
+                result = result.Where(p => p.Name.Contains(searchStr) ||
+                    p.Description.Contains(searchStr) ||
+
+                    p.Users.Any(u => u.Email.Contains(searchStr)) ||
+                    p.Users.Any(u => u.FirstName.Contains(searchStr)) ||
+                    p.Users.Any(u => u.LastName.Contains(searchStr)) ||
+                    p.Tickets.Any(u => u.Title.Contains(searchStr))
+                );
+            }
+            else
+            {
+                result = db.Projects.AsQueryable();
+            }
+            return result.OrderByDescending(p => p.Id);
         }
 
         public ActionResult UpdateUsers(int projectId)
