@@ -1,7 +1,9 @@
-﻿@model IEnumerable<LPBugTracker.Models.Project>
+﻿@model IPagedList<LPBugTracker.Models.Project>
 @using LPBugTracker.Helpers
 @using LPBugTracker.Models
 @using Microsoft.AspNet.Identity;
+@using PagedList;
+@using PagedList.Mvc;
 @{
     ViewBag.Title = "Index";
     var ticketHelper = new TicketHelper();
@@ -26,12 +28,16 @@
 
             <div class="title_right">
                 <div class="col-md-5 col-sm-5 col-xs-12 form-group pull-right top_search">
-                    <div class="input-group">
-                        <input type="text" class="form-control" placeholder="Search for...">
-                        <span class="input-group-btn">
-                            <button class="btn btn-default" type="button">Go!</button>
-                        </span>
-                    </div>
+                    @using (Html.BeginForm("Index", "Developer", FormMethod.Get, htmlAttributes: new { @class = "form" }))
+                    {
+
+                        <div class="input-group">
+                            <input type="text" id="searchStr" name="searchStr" class="form-control" placeholder="Search for...">
+                            <span class="input-group-btn">
+                                <button class="btn btn-default" id="searchStr" name="searchStr" type="submit">Go!</button>
+                            </span>
+                        </div>
+                    }
                 </div>
             </div>
         </div>
@@ -225,7 +231,10 @@
             </div>
             count++;
         }
-
+        <div class="row text-center">
+            Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+            @Html.PagedListPager(Model, page => Url.Action("Index", new { page }))
+        </div>
     </div>
 </div>
 <!-- /page content -->

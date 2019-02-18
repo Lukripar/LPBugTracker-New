@@ -1,6 +1,8 @@
 ﻿using LPBugTracker.Helpers;
 using LPBugTracker.Models;
 using Microsoft.AspNet.Identity;
+using PagedList;
+using PagedList.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,12 +20,17 @@ namespace LPBugTracker.Controllers
         private TicketHelper ticketHelper = new TicketHelper();
 
         // GET: Submitter
-        public ActionResult Index()
+        public ActionResult Index(int? page, string searchStr)
         {
             var user = User.Identity.GetUserId();
             var userProjects = projHelper.ListUserProjects(user);
-            
-            return View(userProjects);
+            ViewBag.Search = searchStr;
+            var projList = SearchHelper.ProjectSearch(searchStr, userProjects);
+
+            int pageSize = 5;
+            int pageNumber = (page ?? 1);
+            var projects = userProjects.OrderByDescending(p => p.Id).ToPagedList(pageNumber, pageSize);
+            return View(projList.ToPagedList(pageNumber, pageSize));
         }
 
 

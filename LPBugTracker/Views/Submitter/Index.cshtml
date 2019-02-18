@@ -1,7 +1,9 @@
-﻿@model IEnumerable<LPBugTracker.Models.Project>
+﻿@model IPagedList<LPBugTracker.Models.Project>
 @using LPBugTracker.Helpers
 @using LPBugTracker.Models
 @using Microsoft.AspNet.Identity;
+@using PagedList;
+@using PagedList.Mvc;
 @{
     ViewBag.Title = "Index";
     var ticketHelper = new TicketHelper();
@@ -25,12 +27,16 @@
 
             <div class="title_right">
                 <div class="col-md-5 col-sm-5 col-xs-12 form-group pull-right top_search">
-                    <div class="input-group">
-                        <input type="text" class="form-control" placeholder="Search for...">
-                        <span class="input-group-btn">
-                            <button class="btn btn-default" type="button">Go!</button>
-                        </span>
-                    </div>
+                    @using (Html.BeginForm("Index", "Submitter", FormMethod.Get, htmlAttributes: new { @class = "form" }))
+                    {
+
+                        <div class="input-group">
+                            <input type="text" id="searchStr" name="searchStr" class="form-control" placeholder="Search for...">
+                            <span class="input-group-btn">
+                                <button class="btn btn-default" id="searchStr" name="searchStr" type="submit">Go!</button>
+                            </span>
+                        </div>
+                    }
                 </div>
             </div>
         </div>
@@ -94,131 +100,131 @@
                                             </div>
                                         </div>
                                     }
-                                        <div class="row">
-                                            <div class="col-md-12 text-right">
-                                                <!-- Replace this with an HTML ActionLink once create is finished. -->
-                                                @Html.ActionLink("Create New Ticket", "TicketCreate", new { projectId = project.Id }, new { @class="btn btn-primary" })
-                                            </div>
+                                    <div class="row">
+                                        <div class="col-md-12 text-right">
+                                            <!-- Replace this with an HTML ActionLink once create is finished. -->
+                                            @Html.ActionLink("Create New Ticket", "TicketCreate", new { projectId = project.Id }, new { @class = "btn btn-primary" })
                                         </div>
+                                    </div>
                                 </div>
 
                                 <div class="row">
-                                    
-                                        
-                                            <table class="table table-striped table-bordered dt-responsive nowrap jq-data" id="ticketTable@(count)" cellspacing="0" width="100%">
-                                                <thead>
-                                                    <tr>
-                                                        
-                                                        <th style="width: 20%">Project Name</th>
-                                                        <th>Submitter</th>
-                                                        <th>Developer</th>
-                                                        <th>Status</th>
-                                                        <th>Request Type</th>
-                                                        <th>Priority</th>
-                                                        <th style="width: 20%">#Edit</th>
-                                                        
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    @foreach (var ticket in project.Tickets)
+
+
+                                    <table class="table table-striped table-bordered dt-responsive nowrap jq-data" id="ticketTable@(count)" cellspacing="0" width="100%">
+                                        <thead>
+                                            <tr>
+
+                                                <th style="width: 20%">Project Name</th>
+                                                <th>Submitter</th>
+                                                <th>Developer</th>
+                                                <th>Status</th>
+                                                <th>Request Type</th>
+                                                <th>Priority</th>
+                                                <th style="width: 20%">#Edit</th>
+
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var ticket in project.Tickets)
+                                            {
+                                                <tr>
+                                                    <td>
+                                                        <a>@ticket.Title</a>
+                                                        <br />
+                                                        <small>Created @ticket.Created</small>
+                                                    </td>
+                                                    <td>
+                                                        <img src="@ticket.OwnerUser.AvatarPath" class="avatar" alt="Avatar" />
+                                                        <br />
+                                                        <small>@ticket.OwnerUser.FullName</small>
+                                                    </td>
+                                                    @if (ticket.AssignedUserId != null)
                                                     {
-                                                    <tr>
                                                         <td>
-                                                            <a>@ticket.Title</a>
+                                                            <img src="@ticket.AssignedUser.AvatarPath" class="avatar" alt="Avatar" />
                                                             <br />
-                                                            <small>Created @ticket.Created</small>
+                                                            <small>@ticket.AssignedUser.FullName</small>
                                                         </td>
-                                                        <td>
-                                                            <img src="@ticket.OwnerUser.AvatarPath" class="avatar" alt="Avatar" />
-                                                            <br />
-                                                            <small>@ticket.OwnerUser.FullName</small>
-                                                        </td>
-                                                        @if (ticket.AssignedUserId != null)
-                                                        {
-                                                            <td>
-                                                                <img src="@ticket.AssignedUser.AvatarPath" class="avatar" alt="Avatar" />
-                                                                <br />
-                                                                <small>@ticket.AssignedUser.FullName</small>
-                                                            </td>
-                                                        }
-                                                        else
-                                                        {
-                                                            <td></td>
-                                                        }
-                                                        <td>
-                                                            @if (ticket.Status.Name == "Unassigned")
-                                                            {
-                                                                <button class="btn btn-sm btn-danger">Unassigned</button>
-                                                            }
-                                                            else if (ticket.Status.Name == "Open")
-                                                            {
-                                                                <button class="btn btn-sm btn-primary">Open</button>
-                                                            }
-                                                            else if (ticket.Status.Name == "Resolved")
-                                                            {
-                                                                <button class="btn btn-sm btn-success">Closed</button>
-                                                            }
-                                                            else if (ticket.Status.Name == "Need More Info")
-                                                            {
-                                                                <button class="btn btn-sm btn-warning">Contact Needed</button>
-                                                            }
-                                                        </td>
-                                                        <td>
-                                                            @if (ticket.Type.Name == "Bug")
-                                                            {
-                                                                <button class="btn btn-sm btn-danger">Bug</button>
-                                                            }
-                                                            else if (ticket.Type.Name == "Feature Request")
-                                                            {
-                                                                <button class="btn btn-sm btn-success">Feature Request</button>
-                                                            }
-                                                            else if (ticket.Type.Name == "Documentation")
-                                                            {
-                                                                <button class="btn btn-sm btn-warning">Documentation</button>
-                                                            }
-                                                            else if (ticket.Type.Name == "Other")
-                                                            {
-                                                                <button class="btn btn-sm btn-primary">Other</button>
-                                                            }
-                                                        </td>
-                                                        <td>
-                                                            @if (ticket.Priority.Name == "None")
-                                                            {
-                                                                <button class="btn btn-sm btn-default">None</button>
-                                                            }
-                                                            else if (ticket.Priority.Name == "Low")
-                                                            {
-                                                                <button class="btn btn-sm btn-success">Low</button>
-                                                            }
-                                                            else if (ticket.Priority.Name == "Medium")
-                                                            {
-                                                                <button class="btn btn-sm btn-primary">Medium</button>
-                                                            }
-                                                            else if (ticket.Priority.Name == "High")
-                                                            {
-                                                                <button class="btn btn-sm btn-warning">High</button>
-                                                            }
-                                                            else if (ticket.Priority.Name == "Urgent")
-                                                            {
-                                                                <button class="btn btn-sm btn-danger">Urgent</button>
-                                                            }
-                                                        </td>
-                                                        <!-- These don't do anything yet. -->
-
-                                                        <td>
-                                                            @if (HttpContext.Current.User.Identity.GetUserId() == ticket.OwnerUserId)
-                                                            {
-                                                                <a href="@Url.Action("Details", "Tickets", new { id = ticket.Id })" class="btn btn-primary btn-xs"><i class="fa fa-folder"></i> View </a>
-                                                            }
-                                                        </td>
-
-
-                                                    </tr>
                                                     }
-                                                </tbody>
-                                            </table>
-                                        
-                                    
+                                                    else
+                                                    {
+                                                        <td></td>
+                                                    }
+                                                    <td>
+                                                        @if (ticket.Status.Name == "Unassigned")
+                                                        {
+                                                            <button class="btn btn-sm btn-danger">Unassigned</button>
+                                                        }
+                                                        else if (ticket.Status.Name == "Open")
+                                                        {
+                                                            <button class="btn btn-sm btn-primary">Open</button>
+                                                        }
+                                                        else if (ticket.Status.Name == "Resolved")
+                                                        {
+                                                            <button class="btn btn-sm btn-success">Closed</button>
+                                                        }
+                                                        else if (ticket.Status.Name == "Need More Info")
+                                                        {
+                                                            <button class="btn btn-sm btn-warning">Contact Needed</button>
+                                                        }
+                                                    </td>
+                                                    <td>
+                                                        @if (ticket.Type.Name == "Bug")
+                                                        {
+                                                            <button class="btn btn-sm btn-danger">Bug</button>
+                                                        }
+                                                        else if (ticket.Type.Name == "Feature Request")
+                                                        {
+                                                            <button class="btn btn-sm btn-success">Feature Request</button>
+                                                        }
+                                                        else if (ticket.Type.Name == "Documentation")
+                                                        {
+                                                            <button class="btn btn-sm btn-warning">Documentation</button>
+                                                        }
+                                                        else if (ticket.Type.Name == "Other")
+                                                        {
+                                                            <button class="btn btn-sm btn-primary">Other</button>
+                                                        }
+                                                    </td>
+                                                    <td>
+                                                        @if (ticket.Priority.Name == "None")
+                                                        {
+                                                            <button class="btn btn-sm btn-default">None</button>
+                                                        }
+                                                        else if (ticket.Priority.Name == "Low")
+                                                        {
+                                                            <button class="btn btn-sm btn-success">Low</button>
+                                                        }
+                                                        else if (ticket.Priority.Name == "Medium")
+                                                        {
+                                                            <button class="btn btn-sm btn-primary">Medium</button>
+                                                        }
+                                                        else if (ticket.Priority.Name == "High")
+                                                        {
+                                                            <button class="btn btn-sm btn-warning">High</button>
+                                                        }
+                                                        else if (ticket.Priority.Name == "Urgent")
+                                                        {
+                                                            <button class="btn btn-sm btn-danger">Urgent</button>
+                                                        }
+                                                    </td>
+                                                    <!-- These don't do anything yet. -->
+
+                                                    <td>
+                                                        @if (HttpContext.Current.User.Identity.GetUserId() == ticket.OwnerUserId)
+                                                        {
+                                                            <a href="@Url.Action("Details", "Tickets", new { id = ticket.Id })" class="btn btn-primary btn-xs"><i class="fa fa-folder"></i> View </a>
+                                                        }
+                                                    </td>
+
+
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+
+
                                 </div>
 
                             </div>
@@ -228,9 +234,13 @@
                     </div>
                 </div>
             </div>
-                                                                count++;
-                                                            }
-        
+            count++;
+        }
+
+        <div class="row text-center">
+            Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+            @Html.PagedListPager(Model, page => Url.Action("Index", new { page }))
+        </div>
     </div>
 </div>
 <!-- /page content -->

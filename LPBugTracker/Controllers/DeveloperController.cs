@@ -1,6 +1,7 @@
 ﻿using LPBugTracker.Helpers;
 using LPBugTracker.Models;
 using Microsoft.AspNet.Identity;
+using PagedList;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,17 +17,30 @@ namespace LPBugTracker.Controllers
         private ProjectHelper projHelper = new ProjectHelper();
 
         // GET: Developer
-        public ActionResult Index()
+        public ActionResult Index(int? page, string searchStr)
         {
             var userProjects = projHelper.ListUserProjects(User.Identity.GetUserId());
             var openTicketProjects = userProjects.Where(p => p.Tickets.Where(t => t.Status.Name != "Unassigned").Count() > 0).ToList();
-            return View(openTicketProjects);
-        }
+            ViewBag.Search = searchStr;
+            var projList = SearchHelper.ProjectSearch(searchStr, openTicketProjects);
 
-        public ActionResult AllProjectsIndex()
+            int pageSize = 5;
+            int pageNumber = (page ?? 1);
+            var projects = openTicketProjects.OrderByDescending(p => p.Id).ToPagedList(pageNumber, pageSize);
+            return View(projList.ToPagedList(pageNumber, pageSize));
+        }
+        
+        public ActionResult AllProjectsIndex(int? page, string searchStr)
         {
             var userProjects = projHelper.ListUserProjects(User.Identity.GetUserId());
-            return View(userProjects);
+
+            ViewBag.Search = searchStr;
+            var projList = SearchHelper.ProjectSearch(searchStr, userProjects);
+
+            int pageSize = 5;
+            int pageNumber = (page ?? 1);
+            var projects = userProjects.OrderByDescending(p => p.Name).ToPagedList(pageNumber, pageSize);
+            return View(projList.ToPagedList(pageNumber, pageSize));
         }
 
         public ActionResult MyTicketsIndex()

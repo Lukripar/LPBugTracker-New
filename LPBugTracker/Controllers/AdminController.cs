@@ -46,35 +46,15 @@ namespace LPBugTracker.Controllers
         public ActionResult Dashboard(int? page, string searchStr)
         {
             ViewBag.Search = searchStr;
-            var projList = IndexSearch(searchStr);
+            var projList = SearchHelper.IndexSearch(searchStr);
 
             int pageSize = 5;
             int pageNumber = (page ?? 1);
-            var projects = db.Projects.OrderByDescending(p => p.Name).ToPagedList(pageNumber, pageSize);
+            var projects = db.Projects.OrderByDescending(p => p.Id).ToPagedList(pageNumber, pageSize);
             return View(projList.ToPagedList(pageNumber,pageSize));
         }
 
-        public IQueryable<Project> IndexSearch(string searchStr)
-        {
-            IQueryable<Project> result = null;
-            if (searchStr != null)
-            {
-                result = db.Projects.AsQueryable();
-                result = result.Where(p => p.Name.Contains(searchStr) ||
-                    p.Description.Contains(searchStr) ||
-
-                    p.Users.Any(u => u.Email.Contains(searchStr)) ||
-                    p.Users.Any(u => u.FirstName.Contains(searchStr)) ||
-                    p.Users.Any(u => u.LastName.Contains(searchStr)) ||
-                    p.Tickets.Any(u => u.Title.Contains(searchStr))
-                );
-            }
-            else
-            {
-                result = db.Projects.AsQueryable();
-            }
-            return result.OrderByDescending(p => p.Id);
-        }
+        
 
         public ActionResult UpdateUsers(int projectId)
         {
