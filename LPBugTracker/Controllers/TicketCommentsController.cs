@@ -20,36 +20,6 @@ namespace LPBugTracker.Controllers
         private UserRolesHelper roleHelper = new UserRolesHelper();
         private ProjectHelper projHelper = new ProjectHelper();
         private NotificationHelper notifyHelper = new NotificationHelper();
-        // GET: TicketComments
-        public ActionResult Index()
-        {
-            var ticketComments = db.Comments.Include(t => t.Ticket).Include(t => t.User);
-            return View(ticketComments.ToList());
-        }
-
-        // GET: TicketComments/Details/5
-        public ActionResult Details(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            TicketComment ticketComment = db.Comments.Find(id);
-            if (ticketComment == null)
-            {
-                return HttpNotFound();
-            }
-            return View(ticketComment);
-        }
-
-        // GET: TicketComments/Create
-        public ActionResult Create()
-        {
-            
-            ViewBag.TicketId = new SelectList(db.Tickets, "Id", "OwnerUserId");
-            ViewBag.UserId = new SelectList(db.Users, "Id", "FirstName");
-            return View();
-        }
 
         // POST: TicketComments/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 

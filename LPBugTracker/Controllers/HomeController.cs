@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LPBugTracker.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -11,6 +12,7 @@ namespace LPBugTracker.Controllers
     {
         public ActionResult Index()
         {
+
             return View();
         }
 
@@ -19,10 +21,6 @@ namespace LPBugTracker.Controllers
             return View();
         }
 
-        public ActionResult Dashboard()
-        {
-            ViewBag.Message = "This will be the dashboard that the user sees upon logging in.";
-            return View();
-        }
+        
     }
 }

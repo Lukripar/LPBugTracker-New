@@ -108,7 +108,7 @@ namespace LPBugTracker.Controllers
                             }
                             else
                             {
-                                return RedirectToAction("Index", "Profile");
+                                return RedirectToAction("Index", "Profile", new { id = userId });
                             }
 
 
@@ -153,7 +153,7 @@ namespace LPBugTracker.Controllers
                             }
                             else
                             {
-                                return RedirectToAction("Index", "Profile");
+                                return RedirectToAction("Index", "Profile", new { id = userId });
                             }
 
 
@@ -230,6 +230,7 @@ namespace LPBugTracker.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Register(LoginOrRegisterViewModel model)
         {
+
             if (ModelState.IsValid)
             {
                 var user = new ApplicationUser {
@@ -238,7 +239,7 @@ namespace LPBugTracker.Controllers
                     FirstName = model.Register.FirstName,
                     LastName = model.Register.LastName,
                     DisplayName = model.Register.DisplayName,
-                    AvatarPath = "/img/defaultprofilepic.jpg"
+                    AvatarPath = "/img/user.png"
                 };
                 var result = await UserManager.CreateAsync(user, model.Register.Password);
                 if (result.Succeeded)
@@ -257,7 +258,8 @@ namespace LPBugTracker.Controllers
             }
 
             // If we got this far, something failed, redisplay form
-            return View(model);
+            return View("~/Views/Home/Index.cshtml", model);
+            //return RedirectToAction("Index", "Home", new { model = model });
         }
 
         //

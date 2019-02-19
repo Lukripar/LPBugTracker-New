@@ -23,34 +23,13 @@ namespace LPBugTracker.Controllers
         private NotificationHelper notifyHelper = new NotificationHelper();
 
         // GET: TicketAttachments
-        public ActionResult Index()
-        {
-            var ticketAttachments = db.Attachments.Include(t => t.Ticket).Include(t => t.User);
-            return View(ticketAttachments.ToList());
-        }
+        
 
         // GET: TicketAttachments/Details/5
-        public ActionResult Details(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            TicketAttachment ticketAttachment = db.Attachments.Find(id);
-            if (ticketAttachment == null)
-            {
-                return HttpNotFound();
-            }
-            return View(ticketAttachment);
-        }
+        
 
         // GET: TicketAttachments/Create
-        public ActionResult Create()
-        {
-            ViewBag.TicketId = new SelectList(db.Tickets, "Id", "OwnerUserId");
-            ViewBag.UserId = new SelectList(db.Users, "Id", "FirstName");
-            return View();
-        }
+        
 
         // POST: TicketAttachments/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
@@ -103,40 +82,7 @@ namespace LPBugTracker.Controllers
             return View(ticketAttachment);
         }
 
-        // GET: TicketAttachments/Edit/5
-        public ActionResult Edit(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            TicketAttachment ticketAttachment = db.Attachments.Find(id);
-            if (ticketAttachment == null)
-            {
-                return HttpNotFound();
-            }
-            ViewBag.TicketId = new SelectList(db.Tickets, "Id", "OwnerUserId", ticketAttachment.TicketId);
-            ViewBag.UserId = new SelectList(db.Users, "Id", "FirstName", ticketAttachment.UserId);
-            return View(ticketAttachment);
-        }
-
-        // POST: TicketAttachments/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,TicketId,FilePath,Description,Created,UserId")] TicketAttachment ticketAttachment)
-        {
-            if (ModelState.IsValid)
-            {
-                db.Entry(ticketAttachment).State = EntityState.Modified;
-                db.SaveChanges();
-                return RedirectToAction("Index");
-            }
-            ViewBag.TicketId = new SelectList(db.Tickets, "Id", "OwnerUserId", ticketAttachment.TicketId);
-            ViewBag.UserId = new SelectList(db.Users, "Id", "FirstName", ticketAttachment.UserId);
-            return View(ticketAttachment);
-        }
+        
 
         // GET: TicketAttachments/Delete/5
         public ActionResult Delete(int? id)

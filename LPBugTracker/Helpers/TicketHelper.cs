@@ -16,6 +16,11 @@ namespace LPBugTracker.Helpers
         private HistoryHelper historyHelper = new HistoryHelper();
         private NotificationHelper notifyHelper = new NotificationHelper();
 
+        internal object ListAssignedTickets(object getuserId)
+        {
+            throw new NotImplementedException();
+        }
+
         public ICollection<Ticket> ListTicketsOnProject(string projectId)
         {
             var project = db.Projects.Find(projectId);
