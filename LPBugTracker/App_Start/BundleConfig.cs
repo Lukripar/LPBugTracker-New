@@ -58,8 +58,7 @@ namespace LPBugTracker
                 "~/Scripts/jquery.vmap.sampledata.js",
                 "~/Scripts/moment.min.js",
                 "~/Scripts/daterangepicker.js",
-                "~/Libs/Gentelella/js/custom.min.js",
-                "~/Scripts/echarts.min.js"
+                "~/Libs/Gentelella/js/custom.min.js"
 
                 //"~/Scripts/pnotify/pnotify.js",
                 //"~/Scripts/pnotify/pnotify.buttons.js",
