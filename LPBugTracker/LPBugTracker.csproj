@@ -188,7 +188,6 @@
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\ProfileController.cs" />
     <Compile Include="Controllers\ProjectManagerController.cs" />
-    <Compile Include="Controllers\SharedController.cs" />
     <Compile Include="Controllers\SubmitterController.cs" />
     <Compile Include="Controllers\TicketAttachmentsController.cs" />
     <Compile Include="Controllers\TicketCommentsController.cs" />
@@ -530,6 +529,7 @@
     <Content Include="Views\ProjectManager\EditTicketDev.cshtml" />
     <Content Include="Views\Home\DemoIndex.cshtml" />
     <Content Include="Views\Admin\ManageRoles.cshtml" />
+    <Content Include="Views\TicketNotifications\AllNotifications.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

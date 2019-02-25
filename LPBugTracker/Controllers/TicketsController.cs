@@ -9,6 +9,7 @@ using System.Web;
 using System.Web.Mvc;
 using LPBugTracker.Helpers;
 using LPBugTracker.Models;
+using Microsoft.AspNet.Identity;
 
 namespace LPBugTracker.Controllers
 {
@@ -25,7 +26,7 @@ namespace LPBugTracker.Controllers
         // GET: Tickets/Details/5
         public ActionResult Details(int? id)
         {
-
+            var userId = User.Identity.GetUserId();
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
@@ -35,14 +36,17 @@ namespace LPBugTracker.Controllers
             {
                 return HttpNotFound();
             }
+            
             var project = ticket.Project;
             var pms = roleHelper.UsersInRole("Project Manager");
             var assignedPM = "";
+            var pmId = "";
             foreach (var user in ticket.Project.Users)
             {
                 if (roleHelper.IsUserInRole(user.Id, "Project Manager"))
                 {
                     assignedPM = user.FullName;
+                    pmId = user.Id;
                 }
             }
             ViewBag.ProjectManagerName = assignedPM;
@@ -55,7 +59,14 @@ namespace LPBugTracker.Controllers
             var types = db.Types;
             var currentType = ticket.TypeId;
             ViewBag.Types = new SelectList(types, "Id", "Name", currentType);
-            return View(ticket);
+            if(User.IsInRole("Admin") || userId == pmId || userId == ticket.AssignedUserId || userId == ticket.OwnerUserId)
+            {
+                return View(ticket);
+            }
+            else
+            {
+                return RedirectToAction("Index", "Profile");
+            }
         }
 
         public ActionResult TitleEdit(int id)

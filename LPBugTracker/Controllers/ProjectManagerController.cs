@@ -59,7 +59,7 @@ namespace LPBugTracker.Controllers
 
                 db.Projects.Add(project);
                 db.SaveChanges();
-
+                
                 foreach (var dev in Developers)
                 {
                     projHelper.AddUserToProject(dev, project.Id);

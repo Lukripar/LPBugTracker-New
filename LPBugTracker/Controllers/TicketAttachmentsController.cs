@@ -92,6 +92,7 @@ namespace LPBugTracker.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             TicketAttachment ticketAttachment = db.Attachments.Find(id);
+            
             if (ticketAttachment == null)
             {
                 return HttpNotFound();
@@ -105,9 +106,14 @@ namespace LPBugTracker.Controllers
         public ActionResult DeleteConfirmed(int id)
         {
             TicketAttachment ticketAttachment = db.Attachments.Find(id);
+            var userId = User.Identity.GetUserId();
+            if (userId != ticketAttachment.UserId && !User.IsInRole("Admin") && !User.IsInRole("Project Manager"))
+            {
+                return RedirectToAction("Index", "Profile");
+            }
             db.Attachments.Remove(ticketAttachment);
             db.SaveChanges();
-            return RedirectToAction("Index");
+            return RedirectToAction("Details", "Tickets", new { id = ticketAttachment.TicketId } );
         }
 
         protected override void Dispose(bool disposing)

@@ -22,9 +22,11 @@ namespace LPBugTracker.Controllers
         
 
         // GET: Profile
-        public ActionResult Index(string id, ManageMessageId? message)
+        public ActionResult Index(ManageMessageId? message)
 
         {
+            var id = User.Identity.GetUserId();
+
             ViewBag.StatusMessage =
                 message == ManageMessageId.ChangePasswordSuccess ? "Your password has been changed."
                 : message == ManageMessageId.Error ? "An error has occurred"
@@ -44,6 +46,8 @@ namespace LPBugTracker.Controllers
             return View(user);
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult UpdatePicture(HttpPostedFileBase image)
         {
             var userId = User.Identity.GetUserId();
@@ -56,9 +60,9 @@ namespace LPBugTracker.Controllers
                 db.Users.Attach(user);
                 db.Entry(user).Property(u => u.AvatarPath).IsModified = true;
                 db.SaveChanges();
-                return RedirectToAction("Index", new { id = userId, Message = ManageMessageId.ProfileUpdateSuccess });
+                return RedirectToAction("Index", new { Message = ManageMessageId.ProfileUpdateSuccess });
             }
-            return RedirectToAction("Index", new { id = userId });
+            return RedirectToAction("Index");
         }
 
         [HttpPost]

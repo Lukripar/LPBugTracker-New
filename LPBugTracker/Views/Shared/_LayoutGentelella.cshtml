@@ -147,6 +147,13 @@
                                     </li>
                                 }
 
+                                @if (User.IsInRole("Submitter") || User.IsInRole("Developer"))
+                                {
+                                    <li>
+                                        <a href="@Url.Action("Index", "TicketNotifications")"><i class="fa fa-bell"></i> My Notifications </a>
+                                    </li>
+                                }
+
                                 @if (User.IsInRole("Admin") || User.IsInRole("Project Manager"))
                                 {
                                     <li>
@@ -192,7 +199,7 @@
                                 </a>
 
                                 <ul class="dropdown-menu dropdown-usermenu pull-right">
-                                    <li><a href="@Url.Action("Index", "Profile", new { id = userId })"> Profile</a></li>
+                                    <li><a href="@Url.Action("Index", "Profile")"> Profile</a></li>
                                     @*<li>
                                             <a href="javascript:;">
                                                 <span class="badge bg-red pull-right">50%</span>

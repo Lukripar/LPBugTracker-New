@@ -300,9 +300,25 @@
                                     <ul class="list-unstyled project_files">
                                         @foreach (var attachment in Model.Attachments)
                                         {
-                                            <li>
-                                                <a href="@Url.Content(attachment.FilePath)" target="_blank"><i class="@AttachmentHelper.GetIcon(attachment.FilePath)"></i> @attachment.FilePath.Split('/')[2]</a>
-                                            </li>
+                                        <li role="presentation" class="dropdown">
+                                            <a id="drop5" href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" role="button" aria-expanded="false">
+                                                <i class="@AttachmentHelper.GetIcon(attachment.FilePath)"></i> @attachment.FilePath.Split('/')[2]
+                                                <span class="caret"></span>
+                                            </a>
+                                            <ul id="menu2" class="dropdown-menu animated" role="menu" aria-labelledby="drop5">
+                                                <li role="presentation">
+                                                    <a role="menuitem" tabindex="-1" href="@Url.Content(attachment.FilePath)" target="_blank">Download</a>
+                                                </li>
+                                                @if(User.IsInRole("Admin") || User.IsInRole("Project Manager") || userId == attachment.UserId)
+                                                {
+                                                <li role="presentation">
+                                                    <a role="menuitem" tabindex="-1" href="@Url.Action("Delete", "TicketAttachments", new { id = attachment.Id })">Delete</a>
+                                                </li>
+                                                }
+                                                
+
+                                            </ul>
+                                        </li>
                                         }
                                     </ul>
                                     <br />

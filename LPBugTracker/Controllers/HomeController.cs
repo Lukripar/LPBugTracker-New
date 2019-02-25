@@ -15,7 +15,7 @@ namespace LPBugTracker.Controllers
 
             return View();
         }
-
+        
         public ActionResult DemoIndex()
         {
             return View();

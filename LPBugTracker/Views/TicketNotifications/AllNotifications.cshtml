@@ -10,7 +10,7 @@
         <div class="page-title">
             <div class="title_left">
                 <h3>Notifications</h3>
-                @Html.ActionLink("View All Notifications", "AllNotifications", "TicketNotifications", null, new { @class = "btn btn-primary" })
+                @Html.ActionLink("View Unread Notifications", "Index", "TicketNotifications", null, new { @class = "btn btn-primary" })
             </div>
             <div class="title_right">
                 <div class="col-md-5 col-sm-5 col-xs-12 form-group pull-right top_search">
@@ -40,7 +40,7 @@
                         <table class="table jq-data">
                             <thead>
                                 <tr>
-                                    <th>    
+                                    <th>
                                         Ticket Title
                                     </th>
                                     <th>
@@ -55,24 +55,32 @@
                             <tbody>
                                 @foreach (var item in Model)
                                 {
-                                    <tr>
-                                        <td>
-                                            @Html.DisplayFor(modelItem => item.Ticket.Title)
-                                        </td>
-                                        <td>
-                                            @Html.DisplayFor(modelItem => item.Message)
-                                        </td>
-                                        <td>
-                                            @Html.DisplayFor(modelItem => item.Created)
-                                        </td>
-                                        @using (Html.BeginForm("MarkAsRead", "TicketNotifications", FormMethod.Post))
+                                <tr>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Ticket.Title)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Message)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Created)
+                                    </td>
+                                    @if (item.Read == false)
+                                    {
+                                        using (Html.BeginForm("MarkAsRead", "TicketNotifications", FormMethod.Post))
                                         {
-                                           @Html.Hidden("notificationId", item.Id)
-                                        <td>
-                                            <button class="btn btn-sm btn-primary"><i class="fa fa-check"></i> Read</button>
-                                        </td>
+                                            @Html.Hidden("notificationId", item.Id)
+                                            <td>
+                                                <button class="btn btn-sm btn-primary"><i class="fa fa-check"></i> Read</button>
+                                            </td>
                                         }
-                                    </tr>
+                                    }
+                                    else
+                                    {
+                                        <td></td>
+                                    }
+
+                                </tr>
                                 }
                             </tbody>
                         </table>
@@ -83,6 +91,3 @@
     </div>
 </div>
 <!-- /page content -->
-
-
-

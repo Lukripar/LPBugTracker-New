@@ -9,6 +9,7 @@ using System.Web.Mvc;
 
 namespace LPBugTracker.Controllers
 {
+    [Authorize(Roles = "Admin, Developer, Project Manager, Submitter")]
     public class AjaxDataController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();

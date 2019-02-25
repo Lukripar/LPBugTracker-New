@@ -35,30 +35,30 @@ namespace LPBugTracker.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         
         // GET: TicketHistories/Delete/5
-        public ActionResult Delete(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            TicketHistory ticketHistory = db.Histories.Find(id);
-            if (ticketHistory == null)
-            {
-                return HttpNotFound();
-            }
-            return View(ticketHistory);
-        }
+        //public ActionResult Delete(int? id)
+        //{
+        //    if (id == null)
+        //    {
+        //        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+        //    }
+        //    TicketHistory ticketHistory = db.Histories.Find(id);
+        //    if (ticketHistory == null)
+        //    {
+        //        return HttpNotFound();
+        //    }
+        //    return View(ticketHistory);
+        //}
 
         // POST: TicketHistories/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(int id)
-        {
-            TicketHistory ticketHistory = db.Histories.Find(id);
-            db.Histories.Remove(ticketHistory);
-            db.SaveChanges();
-            return RedirectToAction("Index");
-        }
+        //[HttpPost, ActionName("Delete")]
+        //[ValidateAntiForgeryToken]
+        //public ActionResult DeleteConfirmed(int id)
+        //{
+        //    TicketHistory ticketHistory = db.Histories.Find(id);
+        //    db.Histories.Remove(ticketHistory);
+        //    db.SaveChanges();
+        //    return RedirectToAction("Index");
+        //}
 
         protected override void Dispose(bool disposing)
         {

@@ -12,6 +12,7 @@ using Microsoft.AspNet.Identity;
 
 namespace LPBugTracker.Controllers
 {
+    [Authorize(Roles = "Admin, Submitter, Developer")]
     public class TicketNotificationsController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
@@ -19,11 +20,30 @@ namespace LPBugTracker.Controllers
         // GET: TicketNotifications
         public ActionResult Index()
         {
-            var userNotifications = db.Notifications.Include(t => t.Ticket).Include(t => t.User).Where(n => n.UserId == User.Identity.GetUserId());
+            var userId = User.Identity.GetUserId();
+            var userNotifications = db.Notifications.Include(t => t.Ticket).Include(t => t.User).Where(n => n.UserId == userId && n.Read != true);
             return View(userNotifications.ToList());
         }
         
-        
+        public ActionResult AllNotifications()
+        {
+            var userId = User.Identity.GetUserId();
+            var userNotifications = db.Notifications.Include(t => t.Ticket).Include(t => t.User).Where(n => n.UserId == userId);
+            return View(userNotifications.ToList());
+        }
+
+        public ActionResult MarkAsRead(int notificationId)
+        {
+            
+            var notification = db.Notifications.Find(notificationId);
+            if (User.Identity.GetUserId() != notification.UserId)
+                return RedirectToAction("Index", "Profile");
+            notification.Read = true;
+            db.Notifications.Attach(notification);
+            db.Entry(notification).Property(n => n.Read).IsModified = true;
+            db.SaveChanges();
+            return RedirectToAction("Index");
+        }
         
 
         protected override void Dispose(bool disposing)
