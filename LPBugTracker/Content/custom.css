@@ -9,6 +9,9 @@
     background: #f7f7f7;
     border: 1px solid #e6e6e6
 }
+div {
+    word-wrap:break-word;
+}
 
 ul.msg_list li.widthFix {
     

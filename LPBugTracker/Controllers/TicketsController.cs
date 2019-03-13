@@ -13,6 +13,7 @@ using Microsoft.AspNet.Identity;
 
 namespace LPBugTracker.Controllers
 {
+    [Authorize(Roles = "Admin, Project Manager, Developer, Submitter")]
     public class TicketsController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();

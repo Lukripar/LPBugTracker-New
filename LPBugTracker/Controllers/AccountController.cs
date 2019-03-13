@@ -88,7 +88,7 @@ namespace LPBugTracker.Controllers
                     case SignInStatus.Success:
                         if (string.IsNullOrEmpty(returnUrl))
                         {
-                            var userId = db.Users.FirstOrDefault(u => u.Email.ToLower() == model.Login.Email.ToLower()).Id;
+                            var userId = UserManager.FindByEmail(model.Login.Email).Id;
                             if (roleHelper.IsUserInRole(userId, "Admin"))
                             {
                                 return RedirectToAction("Dashboard", "Admin");
@@ -494,7 +494,7 @@ namespace LPBugTracker.Controllers
         // POST: /Account/LogOff
         public ActionResult LogOff()
         {
-            //DefaultAuthenticationTypes.ApplicationCookie
+            
             AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
             System.Web.HttpContext.Current.Session.Clear();
             System.Web.HttpContext.Current.Session.Abandon();

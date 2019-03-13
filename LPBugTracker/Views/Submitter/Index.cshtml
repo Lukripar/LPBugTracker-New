@@ -63,7 +63,37 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-4">
+
+                        <div class="col-md-6">
+                            <div class="row">
+                                <!-- Awaiting Response tickets -->
+                                <div class="animated flipInY col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                    <div class="tile-stats">
+                                        <div class="icon"><i class="fa fa-pause-circle-o"></i></div>
+                                        <div class="count">@userTickets.Where(t => t.Status.Name == "Need More Info").Count()</div>
+                                        <h3>Tickets On Hold</h3>
+                                        <p>We need more information from you to continue.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="row">
+                                <!-- Open tickets -->
+                                <div class="animated flipInY col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                    <div class="tile-stats">
+                                        <div class="icon"><i class="fa fa-play-circle-o"></i></div>
+                                        <div class="count">@userTickets.Where(t => t.Status.Name != "Resolved" && t.Status.Name != "Need More Info").Count()</div>
+                                        <h3>Open Tickets</h3>
+                                        <p>Current number of open tickets.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
                             Show a list of the user's tickets.
                             <table id="subTicketTable" class="table table-condensed jq-data">
                                 <thead>
@@ -81,99 +111,72 @@
                                             <td>
                                                 <a href="@Url.Action("Details", "Tickets", new {id = ticket.Id })">
                                                     @ticket.Project.Name
-                                                <br /><i class="fa fa-long-arrow-right"></i>@ticket.Title
-                                            </a>
-                                        </td>
-                                        <td>
-                                            @if (ticket.Priority.Name == "None")
-                                            {
-                                                <button class="btn btn-sm btn-default">None</button>
-                                            }
-                                            else if (ticket.Priority.Name == "Low")
-                                            {
-                                                <button class="btn btn-sm btn-success">Low</button>
-                                            }
-                                            else if (ticket.Priority.Name == "Medium")
-                                            {
-                                                <button class="btn btn-sm btn-primary">Medium</button>
-                                            }
-                                            else if (ticket.Priority.Name == "High")
-                                            {
-                                                <button class="btn btn-sm btn-warning">High</button>
-                                            }
-                                            else if (ticket.Priority.Name == "Urgent")
-                                            {
-                                                <button class="btn btn-sm btn-danger">Urgent</button>
-                                            }
-                                        </td>
-                                        <td>
-                                            @if (ticket.Status.Name == "Unassigned")
-                                            {
-                                                <button class="btn btn-sm btn-danger">Unassigned</button>
-                                            }
-                                            else if (ticket.Status.Name == "Open")
-                                            {
-                                                <button class="btn btn-sm btn-primary">Open</button>
-                                            }
-                                            else if (ticket.Status.Name == "Resolved")
-                                            {
-                                                <button class="btn btn-sm btn-success">Closed</button>
-                                            }
-                                            else if (ticket.Status.Name == "Need More Info")
-                                            {
-                                                <button class="btn btn-sm btn-warning">On Hold</button>
-                                            }
-                                        </td>
-                                        <td>
-                                            @if (ticket.Type.Name == "Bug")
-                                            {
-                                                <button class="btn btn-sm btn-danger">Bug</button>
-                                            }
-                                            else if (ticket.Type.Name == "Feature Request")
-                                            {
-                                                <button class="btn btn-sm btn-success">Feature</button>
-                                            }
-                                            else if (ticket.Type.Name == "Documentation")
-                                            {
-                                                <button class="btn btn-sm btn-warning">Documentation</button>
-                                            }
-                                            else if (ticket.Type.Name == "Other")
-                                            {
-                                                <button class="btn btn-sm btn-primary">Other</button>
-                                            }
-                                        </td>
-                                    </tr>
-                                }
+                                                    <br /><i class="fa fa-long-arrow-right"></i>@ticket.Title
+                                                </a>
+                                            </td>
+                                            <td>
+                                                @if (ticket.Priority.Name == "None")
+                                                {
+                                                    <button class="btn btn-sm btn-default">None</button>
+                                                }
+                                                else if (ticket.Priority.Name == "Low")
+                                                {
+                                                    <button class="btn btn-sm btn-success">Low</button>
+                                                }
+                                                else if (ticket.Priority.Name == "Medium")
+                                                {
+                                                    <button class="btn btn-sm btn-primary">Medium</button>
+                                                }
+                                                else if (ticket.Priority.Name == "High")
+                                                {
+                                                    <button class="btn btn-sm btn-warning">High</button>
+                                                }
+                                                else if (ticket.Priority.Name == "Urgent")
+                                                {
+                                                    <button class="btn btn-sm btn-danger">Urgent</button>
+                                                }
+                                            </td>
+                                            <td>
+                                                @if (ticket.Status.Name == "Unassigned")
+                                                {
+                                                    <button class="btn btn-sm btn-danger">Unassigned</button>
+                                                }
+                                                else if (ticket.Status.Name == "Open")
+                                                {
+                                                    <button class="btn btn-sm btn-primary">Open</button>
+                                                }
+                                                else if (ticket.Status.Name == "Resolved")
+                                                {
+                                                    <button class="btn btn-sm btn-success">Closed</button>
+                                                }
+                                                else if (ticket.Status.Name == "Need More Info")
+                                                {
+                                                    <button class="btn btn-sm btn-warning">On Hold</button>
+                                                }
+                                            </td>
+                                            <td>
+                                                @if (ticket.Type.Name == "Bug")
+                                                {
+                                                    <button class="btn btn-sm btn-danger">Bug</button>
+                                                }
+                                                else if (ticket.Type.Name == "Feature Request")
+                                                {
+                                                    <button class="btn btn-sm btn-success">Feature</button>
+                                                }
+                                                else if (ticket.Type.Name == "Documentation")
+                                                {
+                                                    <button class="btn btn-sm btn-warning">Documentation</button>
+                                                }
+                                                else if (ticket.Type.Name == "Other")
+                                                {
+                                                    <button class="btn btn-sm btn-primary">Other</button>
+                                                }
+                                            </td>
+                                        </tr>
+                                    }
 
                                 </tbody>
                             </table>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="row">
-                                <!-- Awaiting Response tickets -->
-                                <div class="animated flipInY col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                                    <div class="tile-stats">
-                                        <div class="icon"><i class="fa fa-pause-circle-o"></i></div>
-                                        <div class="count">@userTickets.Where(t => t.Status.Name == "Need More Info").Count()</div>
-                                        <h3>Tickets On Hold</h3>
-                                        <p>We need more information from you to continue.</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-md-4">
-                            <div class="row">
-                                <!-- Open tickets -->
-                                <div class="animated flipInY col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                                    <div class="tile-stats">
-                                        <div class="icon"><i class="fa fa-play-circle-o"></i></div>
-                                        <div class="count">@userTickets.Where(t => t.Status.Name != "Resolved" && t.Status.Name != "Need More Info").Count()</div>
-                                        <h3>Open Tickets</h3>
-                                        <p>Current number of open tickets.</p>
-                                    </div>
-                                </div>
-                            </div>
                         </div>
                     </div>
                 </div>

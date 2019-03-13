@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
 
@@ -15,7 +16,9 @@ namespace LPBugTracker.Models
         public int StatusId { get; set; }
         public int TypeId { get; set; }
         
+        [MaxLength(150)]
         public string Title { get; set; }
+        [MaxLength(250)]
         public string Description { get; set; }
         public DateTime Created { get; set; }
         public DateTime? Updated { get; set; }
